@@ -1110,7 +1110,7 @@ body {
         <!-- Zde budou dopisy -->
         <div class="ag-format-container">
             <div class="ag-courses_box">
-              <div class="ag-courses_item">
+              <div class="ag-courses_item lock-letter">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
                   <div class="ag-courses-item_title">
@@ -1220,16 +1220,21 @@ function submitTeamInfo() {
     // Zde inicializovat časovač
 }
 
-function changePage(newPage) {
+function changePage(newPage) {  
     document.getElementById(currentPage).classList.add('hidden');
     document.getElementById(newPage).classList.remove('hidden');
     currentPage = newPage;
+    if(newPage == "gamePage") {
+      startCountdown();
+      startTimer();
+    }
+    localStorage.setItem('currentPage', newPage);
 }
 
 // Funkce pro inicializaci hry, časovače a další logiky...
 // Funkce pro inicializaci časovače
-function startTimer() {
-            var startTime = Date.now();
+function startTimer() {            
+            var startTime = (Date.now() - localStorage.getItem('elapsedTime')) || Date.now(); 
 
             // Funkce pro aktualizaci času
             function updateTimer() {
@@ -1245,14 +1250,17 @@ function startTimer() {
 
                 // Aktualizace zobrazení času
                 document.getElementById("totalTime").textContent = "Celkový čas: " + hours + ":" + minutes + ":" + seconds;
+                localStorage.setItem('elapsedTime', elapsedTime);
             }
 
             // Aktualizace času každou sekundu
             setInterval(updateTimer, 1000);
         }
 
- function startCountdown(duration, display) {
-    var timer = duration, minutes, seconds;
+ function startCountdown() {
+    display = document.querySelector('#letterTime');
+    var timer_duration = localStorage.getItem('timer_duration') || 30;
+    var timer = timer_duration, minutes, seconds;
     var countdownInterval = setInterval(function () {
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
@@ -1261,6 +1269,7 @@ function startTimer() {
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         display.textContent = "Čas do otevření další obálky " + minutes + ":" + seconds;
+        localStorage.setItem('timer_duration', (minutes*60 + seconds));
 
         if (--timer < 0) {
             clearInterval(countdownInterval);
@@ -1271,10 +1280,12 @@ function startTimer() {
 }
 
 window.onload = function () {
-    var tenMinutes = 20,
-        display = document.querySelector('#letterTime');
-    startCountdown(tenMinutes, display);
-    startTimer();
+    var savedPage = localStorage.getItem('currentPage');
+    if(savedPage) changePage(savedPage);                
+    if(savedPage == "gamePage") {
+      startCountdown();
+      startTimer();
+    }
 };
 </script>
 
