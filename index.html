@@ -982,9 +982,54 @@ body {
                 color: #fff;
                 transform: translateX(113px) translateY(-31px);
             }
-
         }
-    </style>
+        dialog {
+	padding: 1rem 3rem;
+	background: white;
+	max-width: 700px;
+	padding-top: 2rem;
+	border-radius: 20px;
+	border: 0;
+	box-shadow: 0 5px 30px 0 rgb(0 0 0 / 10%);
+	animation: fadeIn 1s ease both;
+	&::backdrop {
+		animation: fadeIn 1s ease both;
+		background: rgb(255 255 255 / 40%);
+		z-index: 2;
+		backdrop-filter: blur(20px);
+	}
+	.x {
+		filter: grayscale(1);
+		border: none;
+		background: none;
+		position: absolute;
+		top: 15px;
+		right: 10px;
+		transition: ease filter, transform 0.3s;
+		cursor: pointer;
+		transform-origin: center;
+		&:hover {
+			filter: grayscale(0);
+			transform: scale(1.1);
+		}
+	}
+  h2 {
+		font-weight: 600;
+		font-size: 4rem;
+		padding-bottom: 1rem;
+	}
+	p {
+		font-size: 2.5rem !important;
+		line-height: 1.3rem;
+		padding: 0.5rem 0;
+		a {
+			&:visited {
+				color: rgb(var(--vs-primary));
+			}
+		}
+	}
+}
+  </style>
 </head>
 <body>
 
@@ -1121,7 +1166,7 @@ body {
         <!-- Zde budou dopisy -->
         <div class="ag-format-container">
             <div class="ag-courses_box">
-              <div class="ag-courses_item">
+              <div class="ag-courses_item open">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
                   <div class="ag-courses-item_title">
@@ -1206,6 +1251,14 @@ body {
             </a>
         </div>
     </div>
+    <dialog id="dialog">
+      <h2>A</h2>
+      <div class="input-block">
+        <label>Zde je prostor pro vložení odpovědi:</label>
+        <input id="answer-input" type="text" required>
+      </div>
+      <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
+    </dialog>
 </div>
 
 <script>
@@ -1227,6 +1280,8 @@ function submitTeamInfo() {
     const captainName = document.getElementById('captainName').value;
     document.getElementById('displayTeamName').textContent = 'Jméno týmu: ' + teamName;
     document.getElementById('displayCaptainName').textContent = 'Jméno kapitána: ' + captainName;
+    localStorage.setItem('teamName', teamName);
+    localStorage.setItem('captainName', captainName);
     changePage('gamePage');
     // Zde inicializovat časovač
 }
@@ -1298,6 +1353,8 @@ window.onload = function () {
     if(savedPage == "gamePage") {
       startCountdown();
       startTimer();
+      document.getElementById('displayTeamName').textContent = 'Jméno týmu: ' + localStorage.getItem('teamName', captainName);;
+      document.getElementById('displayCaptainName').textContent = 'Jméno kapitána: ' + localStorage.getItem('captainName', captainName);;;
     }    
 
     // Přidáme posluchače událostí na všechny obálky
@@ -1306,7 +1363,11 @@ window.onload = function () {
         // Zkontroluje, zda je odemykání povoleno
         can_unlock = localStorage.getItem('can_unlock') || false;
         console.log("pepa", can_unlock);
-        if (can_unlock === true) {
+        if(this.classList.contains("open")){
+          window.dialog.showModal();
+        }
+        if (can_unlock === "true") {
+            this.classList.add("open");
             console.log("pepa in if", can_unlock);
             // Najde všechny potomky s třídou 'lock-letter' a odstraní ji
             this.querySelectorAll('.lock-letter').forEach(function(child) {
