@@ -1450,7 +1450,8 @@ function updateLetterClasses() {
       // Odebrání třídy lock-letter, přidání tříd done-letter a open
       document.querySelector(`.letter_${letter}`).style.pointerEvents = 'none';
       letterElement.classList.remove('lock-letter');
-      letterElement.classList.add('done-letter', 'open');
+      letterElement.classList.add("done-letter");
+      document.querySelector(`.letter_${letter}`).classList.add('open');
     }
     // Případ letterState.locked nemusíme řešit, protože nic neupravujeme
   }
