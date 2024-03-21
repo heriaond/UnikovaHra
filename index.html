@@ -1302,16 +1302,16 @@ function submitTeamInfo() {
 }
 
 const correctAnswers = {
-  A: "a",
-  B: "b",
-  C: "c",
-  D: "d",
-  E: "e",
-  F: "f",
-  G: "g",
-  H: "h",
-  I: "i",
-  FINAL: "f",
+  A: "22" | "dvacet dva" | "dvacetdva",
+  B: "pepko",
+  C: "topení",
+  D: "josef kajetán tyl",
+  E: "malý princ",
+  F: "norsko",
+  G: "111+113+117",
+  H: "sedmikráska",
+  I: "24",
+  FINAL: "1.června" | "music hall goya" | "bídníci", //Dodělat tři inputy a nápovědy (otazníčky ke každému: kdy, kde, kam)
 }
 
 const dialogTexts = {
@@ -1321,7 +1321,7 @@ const dialogTexts = {
   D: "D",
   E: "E - ✉️",
   F: "F",
-  G: "G - ✉️",
+  G: "G - ✉️ \n formát: XXX-XXX-XXX",
   H: "H",
   I: "I",
   FINAL: "Finální úloha - ✉️",
@@ -1344,6 +1344,19 @@ const unlockedBoxes = {
   H: letterState.locked,
   I: letterState.locked,
   FINAL: letterState.locked,
+}
+
+function areAllLettersDone(unlockedBoxes) {
+  // Projde klíče od A do I a zkontroluje, zda všechny mají stav 'done'
+  for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
+    const letter = String.fromCharCode(i);
+    if (unlockedBoxes[letter] !== letterState.done) {
+      console.log("nejsou všechny splněny. -- Nemají DONE");
+      return false; // Pokud nějaký prvek nemá stav 'done', vrátí false
+    }
+  }
+  console.log(" Všechny prvky mají stav 'done'");
+  return true; // Všechny prvky mají stav 'done'
 }
 
 function checkAnswer(event) {
@@ -1483,6 +1496,13 @@ window.onload = function () {
           window.dialog.showModal();
         } else {
           if (can_unlock === "true" ) {
+              if(letter == "FINAL"){
+                var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
+                if(!areAllLettersDone(unlockedBoxesArr)){
+                  console.log("nejsou všechny splněny.");
+                  return;
+                }
+              }
               this.classList.add("open");
               console.log("pepa in if", can_unlock);
               // Najde všechny potomky s třídou 'lock-letter' a odstraní ji
