@@ -1019,6 +1019,7 @@ body {
 		transition: ease filter, transform 0.3s;
 		cursor: pointer;
 		transform-origin: center;
+    font-size: 1.7rem;
 		&:hover {
 			filter: grayscale(0);
 			transform: scale(1.1);
@@ -1040,6 +1041,53 @@ body {
 		}
 	}
 }
+.tooltip {            
+            position: absolute;
+            right: 5rem;
+            font-size: 2.2rem;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* Pokud chcete, aby otazník vypadal jako odkaz */
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* Pozice */
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -60px; /* Polovina šířky tooltipu pro centrování */
+
+            /* Efekty */
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+  #congrats-label {
+    background-color: #3ecd5e;
+    border-radius: 50px;
+    margin-bottom: 2rem;
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;    
+      padding: 2rem;
+    }
+  }
+    
   </style>
 </head>
 <body>
@@ -1143,8 +1191,12 @@ body {
         <!-- Header -->
         <header>
           <div class="row align-items-center">
-            <div class="col-sm-5 text-center text-sm-right">
+            <div class="col-sm-5 text-center text-sm-right">              
               <h4 class="text-7 mb-0">Venkovní šifrovací hry</h4>
+              <div id="congrats-label" class="hidden">
+                <label>Gratulujeme 🎉🎉🎊</label>
+                <label id="total-finish-time"></label>
+              </div>
             </div>
           </div>
           <hr class="my-4">
@@ -1267,6 +1319,23 @@ body {
       <form class="form form-login" onsubmit="event.preventDefault(); checkAnswer(event);">
       <div class="input-block">
         <label>Zde je prostor pro vložení odpovědi:</label>
+        
+        <div id="finalLetterInputs" class="hidden">
+          <label>Odpověď 1</label>
+          <div class="tooltip">?
+            <span class="tooltiptext">Kdy</span>
+          </div>
+          <input id="userAnswer2" type="text">
+          <label>Odpověď 2</label>
+          <div class="tooltip">?
+            <span class="tooltiptext">Kde</span>
+          </div>
+          <input id="userAnswer3" type="text">
+          <label>Odpověď 3</label>
+          <div class="tooltip">?
+            <span class="tooltiptext">Kam</span>
+          </div>
+        </div>
         <input id="userAnswer" type="text" required>
       </div>
       <button class="btn-login" style="opacity: 1; background-color: #952aff; padding: 12px;" type="submit">Odeslat</button>
@@ -1278,7 +1347,7 @@ body {
 
 <script>
 let currentPage = 'loginPage';
-const userInfo = { username: 'a', password: 'a' };
+const userInfo = { username: 'XTB55', password: 'ab123' };
 
 function login() {
     const username = document.getElementById('login-email').value;
@@ -1302,7 +1371,7 @@ function submitTeamInfo() {
 }
 
 const correctAnswers = {
-  A: "22" | "dvacet dva" | "dvacetdva",
+  A: "22",
   B: "pepko",
   C: "topení",
   D: "josef kajetán tyl",
@@ -1311,7 +1380,9 @@ const correctAnswers = {
   G: "111+113+117",
   H: "sedmikráska",
   I: "24",
-  FINAL: "1.června" | "music hall goya" | "bídníci", //Dodělat tři inputy a nápovědy (otazníčky ke každému: kdy, kde, kam)
+  FINAL: "bídníci",
+  FINAL1: "1.června",
+  FINAL2: "music hall goya"
 }
 
 const dialogTexts = {
@@ -1321,7 +1392,7 @@ const dialogTexts = {
   D: "D",
   E: "E - ✉️",
   F: "F",
-  G: "G - ✉️ \n formát: XXX-XXX-XXX",
+  G: "G - ✉️",
   H: "H",
   I: "I",
   FINAL: "Finální úloha - ✉️",
@@ -1346,11 +1417,12 @@ const unlockedBoxes = {
   FINAL: letterState.locked,
 }
 
-function areAllLettersDone(unlockedBoxes) {
+function areAllLettersDone() {
+  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
   // Projde klíče od A do I a zkontroluje, zda všechny mají stav 'done'
   for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
     const letter = String.fromCharCode(i);
-    if (unlockedBoxes[letter] !== letterState.done) {
+    if (unlockedBoxesArr[letter] !== letterState.done) {
       console.log("nejsou všechny splněny. -- Nemají DONE");
       return false; // Pokud nějaký prvek nemá stav 'done', vrátí false
     }
@@ -1359,27 +1431,79 @@ function areAllLettersDone(unlockedBoxes) {
   return true; // Všechny prvky mají stav 'done'
 }
 
-function checkAnswer(event) {
-  console.log("event - ", event);
-  const letter = localStorage.getItem("current_letter_title");
+function compareAnswers (letter) {
   // Definujte správnou odpověď
-  var correctAnswer = correctAnswers[letter]; // Nahraďte správnou odpovědí
+  var correctAnswer = correctAnswers[letter];
   console.log("correctAnswer - ", correctAnswer);
   // Získejte uživatelem zadanou odpověď
   var userAnswer = document.getElementById("userAnswer").value;
+  if(letter === "FINAL") {
+    var correctAnswer1 = correctAnswers[`${letter}1`]; 
+    var correctAnswer2 = correctAnswers[`${letter}2`];
+    console.log("correctAnswer1 - ", correctAnswer1);
+    var userAnswer1 = document.getElementById("userAnswer2").value;
+    var userAnswer2 = document.getElementById("userAnswer3").value;
+    return ((userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()) &&  (userAnswer1.trim().toLowerCase() === correctAnswer1.toLowerCase()) &&  (userAnswer2.trim().toLowerCase() === correctAnswer2.toLowerCase()))
+  } else {
+    return userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()
+  }
+}
+
+function convertMsToTime(milliseconds) {
+    let seconds = Math.floor(milliseconds / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+  
+    seconds = seconds % 60;
+    minutes = minutes % 60;
+  
+    // Přidá vedoucí nuly, pokud je hodnota menší než 10
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+  
+    return `Celkový čas: ${hours}:${minutes}:${seconds}`;
+}
+
+function setFinalState() {
+  var feedbackElement = document.getElementById("feedback");
+  feedbackElement.innerHTML = "";
+  document.getElementById("userAnswer2").value = "";
+  document.getElementById("userAnswer3").value = "";
+  document.getElementById("congrats-label").classList.remove("hidden");
+  document.getElementById("total-finish-time").textContent = convertMsToTime(localStorage.getItem("final_time"));
+  document.getElementById("totalTime").style.display = "none";
+  document.getElementById("letterTime").style.display = "none";
+}
+
+function checkAnswer(event) {
+  console.log("event - ", event);
+  var letter = localStorage.getItem("current_letter_title");
+  letter == "Finální úloha" ? letter = "FINAL": "";
   
   // Získejte element pro zobrazení zpětné vazby
   var feedbackElement = document.getElementById("feedback");
   
   // Porovnejte uživatelem zadanou odpověď se správnou odpovědí
-  if(userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()) {
+  if(compareAnswers(letter)) {
     // Uživatel zadal správnou odpověď
     const box = document.querySelector(`.letter_${letter}`);
     box.style.pointerEvents = 'none';
     box.querySelector(".ag-courses-item_title").classList.add("done-letter")
-    unlockedBoxes[letter] = letterState.done;
-    localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxes));
+    var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
+    unlockedBoxesArr[letter] = letterState.done;
+    localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxesArr));
+    document.getElementById("userAnswer").value = "";
     window.dialog.close();
+    var feedbackElement = document.getElementById("feedback");
+    feedbackElement.innerHTML = "";
+
+    if(letter == "FINAL") {
+      //TODO: Dodelat tlacitko zobrazeni statistik (restart?) -- bude se zobrazovat podle localStorage "state"      
+      localStorage.setItem('state', "done");
+      localStorage.setItem('final_time', localStorage.getItem("elapsedTime"));
+      setFinalState();
+    }
   } else {
     // Uživatel zadal nesprávnou odpověď
     feedbackElement.innerHTML = "Nesprávně, zkuste to znovu.";
@@ -1427,7 +1551,7 @@ function startTimer() {
  function startCountdown() {    
     display = document.querySelector('#letterTime');
     display.style.color = "red";
-    var timer_duration = localStorage.getItem('timer_duration') || 30;
+    var timer_duration = localStorage.getItem('timer_duration') || 5; //TODO: Změnit čas
     var timer = timer_duration, minutes, seconds;
     var countdownInterval = setInterval(function () {
         minutes = parseInt(timer / 60, 10);
@@ -1452,13 +1576,15 @@ function startTimer() {
 function updateLetterClasses() {
   var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
   console.log("unlockedBoxesArr", unlockedBoxesArr)
-  for (const [letter, state] of Object.entries(unlockedBoxesArr)) {
+  for (var [letter, state] of Object.entries(unlockedBoxesArr)) {
+    letter == "Finální úloha" ? letter = "FINAL": "";
     const letterElement = document.getElementById(`letter_${letter}`);
     if (!letterElement) continue; // Pokud prvek neexistuje, pokračujeme dále
     
     if (state === letterState.unlocked) {
       // Odebrání třídy lock-letter
       letterElement.classList.remove('lock-letter');
+      document.querySelector(`.letter_${letter}`).classList.add('open');
     } else if (state === letterState.done) {
       // Odebrání třídy lock-letter, přidání tříd done-letter a open
       document.querySelector(`.letter_${letter}`).style.pointerEvents = 'none';
@@ -1472,6 +1598,7 @@ function updateLetterClasses() {
 
 window.onload = function () {    
     var savedPage = localStorage.getItem('currentPage');
+    var currentState = localStorage.getItem('state');
     if(savedPage) changePage(savedPage);     
     updateLetterClasses();           
     if(savedPage == "gamePage") {
@@ -1480,6 +1607,10 @@ window.onload = function () {
       updateLetterClasses();
       document.getElementById('displayTeamName').textContent = 'Jméno týmu: ' + localStorage.getItem('teamName', captainName);;
       document.getElementById('displayCaptainName').textContent = 'Jméno kapitána: ' + localStorage.getItem('captainName', captainName);;;
+
+      if(currentState == "done"){
+        setFinalState();
+      }
     }    
 
     // Přidáme posluchače událostí na všechny obálky
@@ -1490,18 +1621,24 @@ window.onload = function () {
         console.log("pepa", can_unlock);
         current_letter_title = item.querySelector('.ag-courses-item_title').textContent.trim(); // Najděte potomka uvnitř rodiče
         localStorage.setItem('current_letter_title', current_letter_title);
-        if(this.classList.contains("open")){
-          const letter = localStorage.getItem("current_letter_title");
+        var letter = localStorage.getItem("current_letter_title");
+        if(this.classList.contains("open")){          
+          letter == "Finální úloha" ? letter = "FINAL": "";
           document.getElementById('dialogTitle').textContent = dialogTexts[letter];
           window.dialog.showModal();
         } else {
           if (can_unlock === "true" ) {
-              if(letter == "FINAL"){
-                var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
-                if(!areAllLettersDone(unlockedBoxesArr)){
+              if(letter == "Finální úloha"){
+                if(!areAllLettersDone()){
                   console.log("nejsou všechny splněny.");
                   return;
                 }
+                localStorage.setItem('state', "finalState");
+                document.getElementById("finalLetterInputs").classList.remove("hidden");
+                var inputElement1 = document.getElementById('userAnswer2');
+                var inputElement2 = document.getElementById('userAnswer3');
+                inputElement1.required = true;
+                inputElement2.required = true;
               }
               this.classList.add("open");
               console.log("pepa in if", can_unlock);
@@ -1509,14 +1646,15 @@ window.onload = function () {
               this.querySelectorAll('.lock-letter').forEach(function(child) {
                 const letter = localStorage.getItem("current_letter_title");
                   child.classList.remove('lock-letter');
-                  unlockedBoxes[letter] = letterState.unlocked;
-                  localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxes));
+                  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes;
+                  unlockedBoxesArr[letter] = letterState.unlocked;
+                  localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxesArr));
               });
 
               // Zablokuje další odemykání dokud nebude 'can_unlock' opět nastaveno na true
               can_unlock = false;
               localStorage.setItem('can_unlock', 'false');
-              localStorage.setItem('timer_duration', (20));
+              localStorage.setItem('timer_duration', (3));
               startCountdown();
           }
         }
