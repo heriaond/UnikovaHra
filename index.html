@@ -2,6 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no">
     <title>Venkovní úniková hra - Po stopách Romantismu</title>
     <style>
         *,
@@ -931,6 +932,16 @@ body {
     margin-bottom: 15px;
     margin-top: 10px;
 }
+.done-letter {
+    font-size: 80px; /* Příklad velikosti písma */    
+    height: 1em; /* Výška zámku odpovídá velikosti písma */    
+    background: url('check-mark.svg') no-repeat center center; /* Cesta k obrázku zámku */
+    background-size: contain; /* Ujistěte se, že obrázek zámku se vešel a zachoval proporce */
+    text-indent: -9999px; /* Skryje text posunutím mimo zobrazenou oblast */
+    overflow: hidden; /* Zabraňuje zobrazení textu mimo element */
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
 }
 
         @media only screen and (min-width: 768px) {
@@ -1166,75 +1177,75 @@ body {
         <!-- Zde budou dopisy -->
         <div class="ag-format-container">
             <div class="ag-courses_box">
-              <div class="ag-courses_item open">
+              <div class="ag-courses_item letter_A open">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title">
+                  <div id="letter_A" class="ag-courses-item_title lock-letter">
                     A
                   </div>                            
                 </a>
               </div>
           
-              <div class="ag-courses_item">
+              <div class="ag-courses_item letter_B">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_B" class="ag-courses-item_title lock-letter">
                     B
                   </div>
                 </a>
               </div>
-              <div class="ag-courses_item" style="border: solid; border-color: #e44002; border-width: 6px;">
+              <div class="ag-courses_item letter_C" style="border: solid; border-color: #e44002; border-width: 6px;">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_C" class="ag-courses-item_title lock-letter">
                     C
                   </div>
                 </a>
               </div>
-              <div class="ag-courses_item">
+              <div class="ag-courses_item letter_D">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_D" class="ag-courses-item_title lock-letter">
                     D
                   </div>
                 </a>
               </div>
-              <div class="ag-courses_item" style="border: solid; border-color: #cd3e94; border-width: 6px;">
+              <div class="ag-courses_item letter_E" style="border: solid; border-color: #cd3e94; border-width: 6px;">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_E" class="ag-courses-item_title lock-letter">
                     E
                   </div>
                 </a>
               </div>
-              <div class="ag-courses_item">
+              <div class="ag-courses_item letter_F">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_F" class="ag-courses-item_title lock-letter">
                     F
                   </div>
                 </a>
               </div>
-              <div class="ag-courses_item" style="border: solid; border-color: #f9b234; border-width: 6px;">
+              <div class="ag-courses_item letter_G" style="border: solid; border-color: #f9b234; border-width: 6px;">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_G" class="ag-courses-item_title lock-letter">
                     G
                   </div>
                 </a>
               </div>
-              <div class="ag-courses_item">
+              <div class="ag-courses_item letter_H">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_H" class="ag-courses-item_title lock-letter">
                     H
                   </div>
                 </a>
               </div>
-              <div class="ag-courses_item">
+              <div class="ag-courses_item letter_I">
                 <a href="#" class="ag-courses-item_link">
                   <div class="ag-courses-item_bg"></div>
-                  <div class="ag-courses-item_title lock-letter">
+                  <div id="letter_I" class="ag-courses-item_title lock-letter">
                     I
                   </div>
                 </a>
@@ -1242,22 +1253,26 @@ body {
              
             </div>
         </div>
-        <div class="ag-courses_item" style="border: solid; border-color: #3ecd5e; border-width: 6px;">
+        <div class="ag-courses_item letter_FINAL" style="border: solid; border-color: #3ecd5e; border-width: 6px;">
             <a href="#" class="ag-courses-item_link">
                 <div class="ag-courses-item_bg"></div>
-                <div class="ag-courses-item_title lock-letter">
+                <div id="letter_FINAL" class="ag-courses-item_title lock-letter">
                 Finální úloha
                 </div>
             </a>
         </div>
     </div>
     <dialog id="dialog">
-      <h2>A</h2>
+      <h2 id="dialogTitle"></h2>
+      <form class="form form-login" onsubmit="event.preventDefault(); checkAnswer(event);">
       <div class="input-block">
         <label>Zde je prostor pro vložení odpovědi:</label>
-        <input id="answer-input" type="text" required>
+        <input id="userAnswer" type="text" required>
       </div>
+      <button class="btn-login" style="opacity: 1; background-color: #952aff; padding: 12px;" type="submit">Odeslat</button>
+      </form>
       <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
+      <div id="feedback" style="font-size: 2rem;"></div>
     </dialog>
 </div>
 
@@ -1284,6 +1299,79 @@ function submitTeamInfo() {
     localStorage.setItem('captainName', captainName);
     changePage('gamePage');
     // Zde inicializovat časovač
+}
+
+const correctAnswers = {
+  A: "a",
+  B: "b",
+  C: "c",
+  D: "d",
+  E: "e",
+  F: "f",
+  G: "g",
+  H: "h",
+  I: "i",
+  FINAL: "f",
+}
+
+const dialogTexts = {
+  A: "A",
+  B: "B",
+  C: "C - ✉️",
+  D: "D",
+  E: "E - ✉️",
+  F: "F",
+  G: "G - ✉️",
+  H: "H",
+  I: "I",
+  FINAL: "Finální úloha - ✉️",
+}
+
+const letterState = {
+  unlocked: "unlocked",
+  locked: "locked",
+  done: "done"
+}
+
+const unlockedBoxes = {
+  A: letterState.unlocked,
+  B: letterState.locked,
+  C: letterState.locked,
+  D: letterState.locked,
+  E: letterState.locked,
+  F: letterState.locked,
+  G: letterState.locked,
+  H: letterState.locked,
+  I: letterState.locked,
+  FINAL: letterState.locked,
+}
+
+function checkAnswer(event) {
+  console.log("event - ", event);
+  const letter = localStorage.getItem("current_letter_title");
+  // Definujte správnou odpověď
+  var correctAnswer = correctAnswers[letter]; // Nahraďte správnou odpovědí
+  console.log("correctAnswer - ", correctAnswer);
+  // Získejte uživatelem zadanou odpověď
+  var userAnswer = document.getElementById("userAnswer").value;
+  
+  // Získejte element pro zobrazení zpětné vazby
+  var feedbackElement = document.getElementById("feedback");
+  
+  // Porovnejte uživatelem zadanou odpověď se správnou odpovědí
+  if(userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()) {
+    // Uživatel zadal správnou odpověď
+    const box = document.querySelector(`.letter_${letter}`);
+    box.style.pointerEvents = 'none';
+    box.querySelector(".ag-courses-item_title").classList.add("done-letter")
+    unlockedBoxes[letter] = letterState.done;
+    localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxes));
+    window.dialog.close();
+  } else {
+    // Uživatel zadal nesprávnou odpověď
+    feedbackElement.innerHTML = "Nesprávně, zkuste to znovu.";
+    feedbackElement.style.color = "red";
+  }
 }
 
 function changePage(newPage) {  
@@ -1347,12 +1435,35 @@ function startTimer() {
     }, 1000);
 }
 
+// Funkce, která aktualizuje třídy prvků podle jejich stavů v unlockedBoxes
+function updateLetterClasses() {
+  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
+  console.log("unlockedBoxesArr", unlockedBoxesArr)
+  for (const [letter, state] of Object.entries(unlockedBoxesArr)) {
+    const letterElement = document.getElementById(`letter_${letter}`);
+    if (!letterElement) continue; // Pokud prvek neexistuje, pokračujeme dále
+    
+    if (state === letterState.unlocked) {
+      // Odebrání třídy lock-letter
+      letterElement.classList.remove('lock-letter');
+    } else if (state === letterState.done) {
+      // Odebrání třídy lock-letter, přidání tříd done-letter a open
+      document.querySelector(`.letter_${letter}`).style.pointerEvents = 'none';
+      letterElement.classList.remove('lock-letter');
+      letterElement.classList.add('done-letter', 'open');
+    }
+    // Případ letterState.locked nemusíme řešit, protože nic neupravujeme
+  }
+}
+
 window.onload = function () {    
     var savedPage = localStorage.getItem('currentPage');
-    if(savedPage) changePage(savedPage);                
+    if(savedPage) changePage(savedPage);     
+    updateLetterClasses();           
     if(savedPage == "gamePage") {
       startCountdown();
       startTimer();
+      updateLetterClasses();
       document.getElementById('displayTeamName').textContent = 'Jméno týmu: ' + localStorage.getItem('teamName', captainName);;
       document.getElementById('displayCaptainName').textContent = 'Jméno kapitána: ' + localStorage.getItem('captainName', captainName);;;
     }    
@@ -1363,22 +1474,30 @@ window.onload = function () {
         // Zkontroluje, zda je odemykání povoleno
         can_unlock = localStorage.getItem('can_unlock') || false;
         console.log("pepa", can_unlock);
+        current_letter_title = item.querySelector('.ag-courses-item_title').textContent.trim(); // Najděte potomka uvnitř rodiče
+        localStorage.setItem('current_letter_title', current_letter_title);
         if(this.classList.contains("open")){
+          const letter = localStorage.getItem("current_letter_title");
+          document.getElementById('dialogTitle').textContent = dialogTexts[letter];
           window.dialog.showModal();
-        }
-        if (can_unlock === "true") {
-            this.classList.add("open");
-            console.log("pepa in if", can_unlock);
-            // Najde všechny potomky s třídou 'lock-letter' a odstraní ji
-            this.querySelectorAll('.lock-letter').forEach(function(child) {
-                child.classList.remove('lock-letter');
-            });
+        } else {
+          if (can_unlock === "true" ) {
+              this.classList.add("open");
+              console.log("pepa in if", can_unlock);
+              // Najde všechny potomky s třídou 'lock-letter' a odstraní ji
+              this.querySelectorAll('.lock-letter').forEach(function(child) {
+                const letter = localStorage.getItem("current_letter_title");
+                  child.classList.remove('lock-letter');
+                  unlockedBoxes[letter] = letterState.unlocked;
+                  localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxes));
+              });
 
-            // Zablokuje další odemykání dokud nebude 'can_unlock' opět nastaveno na true
-            can_unlock = false;
-            localStorage.setItem('can_unlock', 'false');
-            localStorage.setItem('timer_duration', (20));
-            startCountdown();
+              // Zablokuje další odemykání dokud nebude 'can_unlock' opět nastaveno na true
+              can_unlock = false;
+              localStorage.setItem('can_unlock', 'false');
+              localStorage.setItem('timer_duration', (20));
+              startCountdown();
+          }
         }
     });
 });
