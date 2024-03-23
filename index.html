@@ -1,1197 +1,1236 @@
 <!DOCTYPE html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="user-scalable=no" />
     <title>Venkovní úniková hra - Po stopách Romantismu</title>
     <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
 
-        body {
-            margin: 0;
-            font-family: Roboto, -apple-system, 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
-            background: #3b4465;
-        }
+      body {
+        margin: 0;
+        font-family: Roboto, -apple-system, 'Helvetica Neue', 'Segoe UI', Arial,
+          sans-serif;
+        background: #3b4465;
+      }
 
-        .forms-section {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+      .forms-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .section-title {
-            font-size: 32px;
-            letter-spacing: 1px;
-            color: #fff;
-        }
+      .section-title {
+        font-size: 32px;
+        letter-spacing: 1px;
+        color: #fff;
+      }
 
-        .forms {
-            display: flex;
-            align-items: flex-start;
-            margin-top: 30px;
-        }
+      .forms {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 30px;
+      }
 
-        .form-wrapper {
-            animation: hideLayer .3s ease-out forwards;
-        }
+      .form-wrapper {
+        animation: hideLayer 0.3s ease-out forwards;
+      }
 
-        .form-wrapper.is-active {
-            animation: showLayer .3s ease-in forwards;
-        }
+      .form-wrapper.is-active {
+        animation: showLayer 0.3s ease-in forwards;
+      }
 
-        @keyframes showLayer {
-            50% {
-                z-index: 1;
-            }
-            100% {
-                z-index: 1;
-            }
+      @keyframes showLayer {
+        50% {
+          z-index: 1;
         }
-
-        @keyframes hideLayer {
-            0% {
-                z-index: 1;
-            }
-            49.999% {
-                z-index: 1;
-            }
+        100% {
+          z-index: 1;
         }
+      }
 
-        .switcher {
-            position: relative;
-            cursor: pointer;
-            display: block;
-            margin-right: auto;
-            margin-left: auto;
-            padding: 0;
-            text-transform: uppercase;
-            font-family: inherit;
-            font-size: 16px;
-            letter-spacing: .5px;
-            color: #999;
-            background-color: transparent;
-            border: none;
-            outline: none;
-            transform: translateX(0);
-            transition: all .3s ease-out;
+      @keyframes hideLayer {
+        0% {
+          z-index: 1;
         }
-
-        .form-wrapper.is-active .switcher-login {
-            color: #fff;
-            transform: translateX(90px);
+        49.999% {
+          z-index: 1;
         }
+      }
 
-        .form-wrapper.is-active .switcher-signup {
-            color: #fff;
-            transform: translateX(-90px);
-        }
+      .switcher {
+        position: relative;
+        cursor: pointer;
+        display: block;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 0;
+        text-transform: uppercase;
+        font-family: inherit;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        color: #999;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        transform: translateX(0);
+        transition: all 0.3s ease-out;
+      }
 
-        .underline {
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            overflow: hidden;
-            pointer-events: none;
-            width: 100%;
-            height: 2px;
-        }
+      .form-wrapper.is-active .switcher-login {
+        color: #fff;
+        transform: translateX(90px);
+      }
 
-        .underline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: inherit;
-            display: block;
-            width: inherit;
-            height: inherit;
-            background-color: currentColor;
-            transition: transform .2s ease-out;
-        }
+      .form-wrapper.is-active .switcher-signup {
+        color: #fff;
+        transform: translateX(-90px);
+      }
 
-        .switcher-login .underline::before {
-            transform: translateX(101%);
-        }
+      .underline {
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        overflow: hidden;
+        pointer-events: none;
+        width: 100%;
+        height: 2px;
+      }
 
-        .switcher-signup .underline::before {
-            transform: translateX(-101%);
-        }
+      .underline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: inherit;
+        display: block;
+        width: inherit;
+        height: inherit;
+        background-color: currentColor;
+        transition: transform 0.2s ease-out;
+      }
 
-        .form-wrapper.is-active .underline::before {
-            transform: translateX(0);
-        }
+      .switcher-login .underline::before {
+        transform: translateX(101%);
+      }
 
-        .form {
-            overflow: hidden;
-            min-width: 260px;
-            margin-top: 50px;
-            padding: 30px 25px;
+      .switcher-signup .underline::before {
+        transform: translateX(-101%);
+      }
+
+      .form-wrapper.is-active .underline::before {
+        transform: translateX(0);
+      }
+
+      .form {
+        overflow: hidden;
+        min-width: 260px;
+        margin-top: 50px;
+        padding: 30px 25px;
         border-radius: 5px;
-            transform-origin: top;
-        }
+        transform-origin: top;
+      }
 
-        .form-login {
-            animation: hideLogin .3s ease-out forwards;
-        }
+      .form-login {
+        animation: hideLogin 0.3s ease-out forwards;
+      }
 
-        .form-wrapper.is-active .form-login {
-            animation: showLogin .3s ease-in forwards;
-        }
+      .form-wrapper.is-active .form-login {
+        animation: showLogin 0.3s ease-in forwards;
+      }
 
-        @keyframes showLogin {
-            0% {
-                background: #d7e7f1;
-                transform: translate(40%, 10px);
-            }
-            50% {
-                transform: translate(0, 0);
-            }
-            100% {
-                background-color: #fff;
-                transform: translate(35%, -20px);
-            }
+      @keyframes showLogin {
+        0% {
+          background: #d7e7f1;
+          transform: translate(40%, 10px);
         }
-
-        @keyframes hideLogin {
-            0% {
-                background-color: #fff;
-                transform: translate(35%, -20px);
-            }
-            50% {
-                transform: translate(0, 0);
-            }
-            100% {
-                background: #d7e7f1;
-                transform: translate(40%, 10px);
-            }
+        50% {
+          transform: translate(0, 0);
         }
-
-        .form-signup {
-            animation: hideSignup .3s ease-out forwards;
+        100% {
+          background-color: #fff;
+          transform: translate(35%, -20px);
         }
+      }
 
-        .form-wrapper.is-active .form-signup {
-            animation: showSignup .3s ease-in forwards;
+      @keyframes hideLogin {
+        0% {
+          background-color: #fff;
+          transform: translate(35%, -20px);
         }
-
-        @keyframes showSignup {
-            0% {
-                background: #d7e7f1;
-                transform: translate(-40%, 10px) scaleY(.8);
-            }
-            50% {
-                transform: translate(0, 0) scaleY(.8);
-            }
-            100% {
-                background-color: #fff;
-                transform: translate(-35%, -20px) scaleY(1);
-            }
+        50% {
+          transform: translate(0, 0);
         }
-
-        @keyframes hideSignup {
-            0% {
-                background-color: #fff;
-                transform: translate(-35%, -20px) scaleY(1);
-            }
-            50% {
-                transform: translate(0, 0) scaleY(.8);
-            }
-            100% {
-                background: #d7e7f1;
-                transform: translate(-40%, 10px) scaleY(.8);
-            }
+        100% {
+          background: #d7e7f1;
+          transform: translate(40%, 10px);
         }
+      }
 
-        .form fieldset {
-            position: relative;
-            opacity: 0;
-            margin: 0;
-            padding: 0;
-            border: 0;
-            transition: all .3s ease-out;
+      .form-signup {
+        animation: hideSignup 0.3s ease-out forwards;
+      }
+
+      .form-wrapper.is-active .form-signup {
+        animation: showSignup 0.3s ease-in forwards;
+      }
+
+      @keyframes showSignup {
+        0% {
+          background: #d7e7f1;
+          transform: translate(-40%, 10px) scaleY(0.8);
         }
-
-        .form-login fieldset {
-            transform: translateX(-50%);
+        50% {
+          transform: translate(0, 0) scaleY(0.8);
         }
-
-        .form-signup fieldset {
-            transform: translateX(50%);
+        100% {
+          background-color: #fff;
+          transform: translate(-35%, -20px) scaleY(1);
         }
+      }
 
-        .form-wrapper.is-active fieldset {
-            opacity: 1;
-            transform: translateX(0);
-            transition: opacity .4s ease-in, transform .35s ease-in;
+      @keyframes hideSignup {
+        0% {
+          background-color: #fff;
+          transform: translate(-35%, -20px) scaleY(1);
         }
-
-        .form legend {
-            position: absolute;
-            overflow: hidden;
-            width: 1px;
-            height: 1px;
-            clip: rect(0 0 0 0);
+        50% {
+          transform: translate(0, 0) scaleY(0.8);
         }
-
-        .input-block {
-            margin-bottom: 20px;
+        100% {
+          background: #d7e7f1;
+          transform: translate(-40%, 10px) scaleY(0.8);
         }
+      }
 
-        .input-block label {
-            font-size: 14px;
+      .form fieldset {
+        position: relative;
+        opacity: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        transition: all 0.3s ease-out;
+      }
+
+      .form-login fieldset {
+        transform: translateX(-50%);
+      }
+
+      .form-signup fieldset {
+        transform: translateX(50%);
+      }
+
+      .form-wrapper.is-active fieldset {
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 0.4s ease-in, transform 0.35s ease-in;
+      }
+
+      .form legend {
+        position: absolute;
+        overflow: hidden;
+        width: 1px;
+        height: 1px;
+        clip: rect(0 0 0 0);
+      }
+
+      .input-block {
+        margin-bottom: 20px;
+      }
+
+      .input-block label {
+        font-size: 14px;
         color: #a1b4b4;
-        }
+      }
 
-        .input-block input {
-            display: block;
-            width: 100%;
-            margin-top: 8px;
-            padding-right: 15px;
-            padding-left: 15px;
-            font-size: 16px;
-            line-height: 40px;
-            color: #3b4465;
+      .input-block input {
+        display: block;
+        width: 100%;
+        margin-top: 8px;
+        padding-right: 15px;
+        padding-left: 15px;
+        font-size: 16px;
+        line-height: 40px;
+        color: #3b4465;
         background: #eef9fe;
         border: 1px solid #cddbef;
         border-radius: 2px;
+      }
+
+      .form [type='submit'] {
+        opacity: 0;
+        display: block;
+        min-width: 120px;
+        margin: 30px auto 10px;
+        font-size: 18px;
+        line-height: 40px;
+        border-radius: 25px;
+        border: none;
+        transition: all 0.3s ease-out;
+      }
+
+      .form-wrapper.is-active .form [type='submit'] {
+        opacity: 1;
+        transform: translateX(0);
+        transition: all 0.4s ease-in;
+      }
+
+      .btn-login {
+        color: #fbfdff;
+        background: #a7e245;
+        transform: translateX(-30%);
+      }
+
+      .btn-signup {
+        color: #a7e245;
+        background: #fbfdff;
+        box-shadow: inset 0 0 0 2px #a7e245;
+        transform: translateX(30%);
+      }
+      .hidden {
+        display: none;
+      }
+      .envelope-locked {
+        /* Přidejte styl pro obrázek zamčené obálky */
+      }
+      .envelope-unlocked {
+        /* Přidejte styl pro obrázek odemčené obálky */
+      }
+
+      /*GLO Wrappwer*/
+      .glo-wrapper {
+        body {
+          background: #e7e9ed;
+          color: #535b61;
+          font-family: 'Poppins', sans-serif;
+          font-size: 14px;
+          line-height: 22px;
+        }
+
+        form {
+          padding: 0;
+          margin: 0;
+          display: inline;
+        }
+
+        img {
+          vertical-align: inherit;
+        }
+
+        a,
+        a:focus {
+          color: slategrey;
+          -webkit-transition: all 0.2s ease;
+          transition: all 0.2s ease;
+        }
+
+        a:hover,
+        a:active {
+          color: #0c2f55;
+          text-decoration: none;
+          -webkit-transition: all 0.2s ease;
+          transition: all 0.2s ease;
+        }
+
+        a:focus,
+        a:active,
+        .btn.active.focus,
+        .btn.active:focus,
+        .btn.focus,
+        .btn:active.focus,
+        .btn:active:focus,
+        .btn:focus,
+        button:focus,
+        button:active {
+          outline: none;
+        }
+
+        p {
+          line-height: 1;
+          font-size: 30px;
+        }
+
+        blockquote {
+          border-left: 5px solid #eee;
+          padding: 10px 20px;
+        }
+
+        iframe {
+          border: 0 !important;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          color: #0c2f54;
+          font-family: 'Poppins', sans-serif;
+        }
+
+        .table {
+          color: #535b61;
+        }
+
+        .table-hover tbody tr:hover {
+          background-color: #f6f7f8;
+        }
+
+        /* =================================== */
+        /*  Helpers Classes
+            /* =================================== */
+        /* Border Radius */
+        .rounded-top-0 {
+          border-top-left-radius: 0px !important;
+          border-top-right-radius: 0px !important;
+        }
+
+        .rounded-bottom-0 {
+          border-bottom-left-radius: 0px !important;
+          border-bottom-right-radius: 0px !important;
+        }
+
+        .rounded-left-0 {
+          border-top-left-radius: 0px !important;
+          border-bottom-left-radius: 0px !important;
+        }
+
+        .rounded-right-0 {
+          border-top-right-radius: 0px !important;
+          border-bottom-right-radius: 0px !important;
+        }
+
+        /* Text Size */
+        .text-0 {
+          font-size: 11px !important;
+          font-size: 0.6875rem !important;
+        }
+
+        .text-1 {
+          font-size: 12px !important;
+          font-size: 0.75rem !important;
+        }
+
+        .text-2 {
+          font-size: 14px !important;
+          font-size: 0.875rem !important;
+        }
+
+        .text-3 {
+          font-size: 16px !important;
+          font-size: 1rem !important;
+        }
+
+        .text-4 {
+          font-size: 18px !important;
+          font-size: 1.125rem !important;
+        }
+
+        .text-5 {
+          font-size: 21px !important;
+          font-size: 1.3125rem !important;
+        }
+
+        .text-6 {
+          font-size: 24px !important;
+          font-size: 1.5rem !important;
+        }
+
+        .text-7 {
+          font-size: 35px !important;
+        }
+
+        .text-8 {
+          font-size: 32px !important;
+          font-size: 2rem !important;
+        }
+
+        .text-9 {
+          font-size: 36px !important;
+          font-size: 2.25rem !important;
+        }
+
+        .text-10 {
+          font-size: 40px !important;
+          font-size: 2.5rem !important;
+        }
+
+        .text-11 {
+          font-size: 44px !important;
+          font-size: 2.75rem !important;
+        }
+
+        .text-12 {
+          font-size: 48px !important;
+          font-size: 3rem !important;
+        }
+
+        .text-13 {
+          font-size: 52px !important;
+          font-size: 3.25rem !important;
+        }
+
+        .text-14 {
+          font-size: 56px !important;
+          font-size: 3.5rem !important;
+        }
+
+        .text-15 {
+          font-size: 60px !important;
+          font-size: 3.75rem !important;
+        }
+
+        .text-16 {
+          font-size: 64px !important;
+          font-size: 4rem !important;
+        }
+
+        .text-17 {
+          font-size: 72px !important;
+          font-size: 4.5rem !important;
+        }
+
+        .text-18 {
+          font-size: 80px !important;
+          font-size: 5rem !important;
+        }
+
+        .text-19 {
+          font-size: 84px !important;
+          font-size: 5.25rem !important;
+        }
+
+        .text-20 {
+          font-size: 92px !important;
+          font-size: 5.75rem !important;
+        }
+
+        /* Line height */
+        .line-height-07 {
+          line-height: 0.7 !important;
+        }
+
+        .line-height-1 {
+          line-height: 1 !important;
+        }
+
+        .line-height-2 {
+          line-height: 1.2 !important;
+        }
+
+        .line-height-3 {
+          line-height: 1.4 !important;
+        }
+
+        .line-height-4 {
+          line-height: 1.6 !important;
+        }
+
+        .line-height-5 {
+          line-height: 1.8 !important;
+        }
+
+        /* Font Weight */
+        .font-weight-100 {
+          font-weight: 100 !important;
+        }
+
+        .font-weight-200 {
+          font-weight: 200 !important;
+        }
+
+        .font-weight-300 {
+          font-weight: 300 !important;
+        }
+
+        .font-weight-400 {
+          font-weight: 400 !important;
+        }
+
+        .font-weight-500 {
+          font-weight: 500 !important;
+        }
+
+        .font-weight-600 {
+          font-weight: 600 !important;
+        }
+
+        .font-weight-700 {
+          font-weight: 700 !important;
+        }
+
+        .font-weight-800 {
+          font-weight: 800 !important;
+        }
+
+        .font-weight-900 {
+          font-weight: 900 !important;
+        }
+
+        /* Opacity */
+        .opacity-0 {
+          opacity: 0;
+        }
+
+        .opacity-1 {
+          opacity: 0.1;
+        }
+
+        .opacity-2 {
+          opacity: 0.2;
+        }
+
+        .opacity-3 {
+          opacity: 0.3;
+        }
+
+        .opacity-4 {
+          opacity: 0.4;
+        }
+
+        .opacity-5 {
+          opacity: 0.5;
+        }
+
+        .opacity-6 {
+          opacity: 0.6;
+        }
+
+        .opacity-7 {
+          opacity: 0.7;
+        }
+
+        .opacity-8 {
+          opacity: 0.8;
+        }
+
+        .opacity-9 {
+          opacity: 0.9;
+        }
+
+        .opacity-10 {
+          opacity: 1;
+        }
+
+        /* Background light */
+        .bg-light-1 {
+          background-color: #e9ecef !important;
+        }
+
+        .bg-light-2 {
+          background-color: #dee2e6 !important;
+        }
+
+        .bg-light-3 {
+          background-color: #ced4da !important;
+        }
+
+        .bg-light-4 {
+          background-color: #adb5bd !important;
+        }
+
+        @media print {
+          .table td,
+          .table th {
+            background-color: transparent !important;
+          }
+
+          .table td.bg-light,
+          .table th.bg-light {
+            background-color: #fff !important;
+          }
+
+          .table td.bg-light-1,
+          .table th.bg-light-1 {
+            background-color: #f9f9fb !important;
+          }
+
+          .table td.bg-light-2,
+          .table th.bg-light-2 {
+            background-color: #f8f8fa !important;
+          }
+
+          .table td.bg-light-3,
+          .table th.bg-light-3 {
+            background-color: #f5f5f5 !important;
+          }
+
+          .table td.bg-light-4,
+          .table th.bg-light-4 {
+            background-color: #eff0f2 !important;
+          }
+
+          .table td.bg-light-5,
+          .table th.bg-light-5 {
+            background-color: #ececec !important;
+          }
+        }
+        /* =================================== */
+        /*  Layouts
+            /* =================================== */
+        .itinerary-container {
+          margin: 15px auto;
+          padding: 70px;
+          max-width: 850px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          -moz-border-radius: 6px;
+          -webkit-border-radius: 6px;
+          -o-border-radius: 6px;
+          border-radius: 6px;
+          margin-top: 50px;
+        }
+
+        @media (max-width: 767px) {
+          .itinerary-container {
+            padding: 35px 20px 70px 20px;
+            margin-top: 0px;
+            border: none;
+            border-radius: 0px;
+          }
+        }
+        /* =================================== */
+        /*  Extras
+            /* =================================== */
+        .bg-primary,
+        .badge-primary {
+          background-color: #0071cc !important;
+        }
+
+        .bg-secondary {
+          background-color: #0c2f55 !important;
+        }
+
+        .text-secondary {
+          color: #0c2f55 !important;
+        }
+
+        .text-primary {
+          color: #0071cc !important;
+        }
+
+        .btn-link {
+          color: #0071cc;
+        }
+
+        .btn-link:hover {
+          color: #0e7fd9 !important;
+        }
+
+        .border-primary {
+          border-color: #0071cc !important;
+        }
+
+        .border-secondary {
+          border-color: #0c2f55 !important;
+        }
+
+        .btn-primary {
+          background-color: #0071cc;
+          border-color: #0071cc;
+        }
+        .btn-primary:hover {
+          background-color: #0e7fd9;
+          border-color: #0e7fd9;
+        }
+
+        .btn-secondary {
+          background-color: #0c2f55;
+          border-color: #0c2f55;
+        }
+
+        .btn-outline-primary {
+          color: #0071cc;
+          border-color: #0071cc;
+        }
+        .btn-outline-primary:hover {
+          background-color: #0071cc;
+          border-color: #0071cc;
+          color: #fff;
+        }
+
+        .btn-outline-secondary {
+          color: #0c2f55;
+          border-color: #0c2f55;
+        }
+        .btn-outline-secondary:hover {
+          background-color: #0c2f55;
+          border-color: #0c2f55;
+          color: #fff;
+        }
+
+        .progress-bar,
+        .nav-pills .nav-link.active,
+        .nav-pills .show > .nav-link {
+          background-color: #0071cc;
+        }
+
+        .page-item.active .page-link,
+        .custom-radio
+          .custom-control-input:checked
+          ~ .custom-control-label:before,
+        .custom-control-input:checked ~ .custom-control-label::before,
+        .custom-checkbox
+          .custom-control-input:checked
+          ~ .custom-control-label:before,
+        .custom-control-input:checked ~ .custom-control-label:before {
+          background-color: #0071cc;
+          border-color: #0071cc;
+        }
+
+        .list-group-item.active {
+          background-color: #0071cc;
+          border-color: #0071cc;
+        }
+
+        .page-link {
+          color: #0071cc;
+        }
+        .page-link:hover {
+          color: #0e7fd9;
+        }
+
+        /* Pagination */
+        .page-link {
+          border-color: #f4f4f4;
+          border-radius: 0.25rem;
+          margin: 0 0.3rem;
+        }
+
+        .page-item.disabled .page-link {
+          border-color: #f4f4f4;
+        }
+      }
+      /*Letter Card style*/
+      .card-letter-wrapper {
+        body {
+          background-color: #3b4465;
+        }
+        .ag-courses_box {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-align: start;
+          -ms-flex-align: start;
+          align-items: flex-start;
+          -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+
+          padding: 50px;
+        }
+        .ag-courses_item {
+          -ms-flex-preferred-size: calc(33.33333% - 30px);
+          flex-basis: calc(33.333% - 15px);
+          margin: 0 7px 30px;
+          overflow: hidden;
+          border-radius: 28px;
+        }
+        .ag-courses-item_link {
+          display: block;
+          padding: 30px 20px;
+          background-color: slategray;
+
+          overflow: hidden;
+
+          position: relative;
+        }
+        .ag-courses-item_link:hover,
+        .ag-courses-item_link:hover .ag-courses-item_date {
+          text-decoration: none;
+          color: #fff;
+        }
+        .ag-courses-item_link:hover .ag-courses-item_bg {
+          -webkit-transform: scale(10);
+          -ms-transform: scale(10);
+          transform: scale(10);
+        }
+        .ag-courses-item_title {
+          min-height: 87px;
+          margin: 0 0 25px;
+
+          overflow: hidden;
+
+          font-weight: bold;
+          font-size: 30px;
+          color: #fff;
+
+          z-index: 2;
+          position: relative;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 60px;
+        }
+        .ag-courses-item_date-box {
+          font-size: 18px;
+          color: #fff;
+
+          z-index: 2;
+          position: relative;
+        }
+        .ag-courses-item_date {
+          font-weight: bold;
+          color: #f9b234;
+
+          -webkit-transition: color 0.5s ease;
+          -o-transition: color 0.5s ease;
+          transition: color 0.5s ease;
+        }
+        .ag-courses-item_bg {
+          height: 128px;
+          width: 128px;
+          background-color: #f9b234;
+
+          z-index: 1;
+          position: absolute;
+          top: -75px;
+          right: -75px;
+
+          border-radius: 50%;
+
+          -webkit-transition: all 0.5s ease;
+          -o-transition: all 0.5s ease;
+          transition: all 0.5s ease;
+        }
+        .ag-courses_item:nth-child(2n) .ag-courses-item_bg {
+          background-color: #3ecd5e;
+        }
+        .ag-courses_item:nth-child(3n) .ag-courses-item_bg {
+          background-color: #e44002;
+        }
+        .ag-courses_item:nth-child(4n) .ag-courses-item_bg {
+          background-color: #952aff;
+        }
+        .ag-courses_item:nth-child(5n) .ag-courses-item_bg {
+          background-color: #cd3e94;
+        }
+        .ag-courses_item:nth-child(6n) .ag-courses-item_bg {
+          background-color: #4c49ea;
+        }
+
+        @media only screen and (max-width: 979px) {
+          .ag-courses_item {
+            -ms-flex-preferred-size: calc(33.33% - 30px);
+            flex-basis: calc(33.33% - 30px);
+          }
+          .ag-courses-item_title {
+            font-size: 24px;
+          }
+        }
+
+        @media only screen and (max-width: 767px) {
+          .ag-format-container {
+            width: 96%;
+          }
+        }
+        @media only screen and (max-width: 639px) {
+          .ag-courses_item {
+            -ms-flex-preferred-size: 100%;
+            flex-basis: 100%;
+          }
+          .ag-courses-item_title {
+            min-height: 72px;
+            line-height: 1;
+
+            font-size: 24px;
+          }
+          .ag-courses-item_link {
+            padding: 22px 40px;
+          }
+          .ag-courses-item_date-box {
+            font-size: 16px;
+          }
+        }
+        .lock-letter {
+          font-size: 80px; /* Příklad velikosti písma */
+          height: 1em; /* Výška zámku odpovídá velikosti písma */
+          background: url('lock.png') no-repeat center center; /* Cesta k obrázku zámku */
+          background-size: contain; /* Ujistěte se, že obrázek zámku se vešel a zachoval proporce */
+          text-indent: -9999px; /* Skryje text posunutím mimo zobrazenou oblast */
+          overflow: hidden; /* Zabraňuje zobrazení textu mimo element */
+          margin-bottom: 15px;
+          margin-top: 10px;
+        }
+        .done-letter {
+          font-size: 80px; /* Příklad velikosti písma */
+          height: 1em; /* Výška zámku odpovídá velikosti písma */
+          background: url('check-mark.svg') no-repeat center center; /* Cesta k obrázku zámku */
+          background-size: contain; /* Ujistěte se, že obrázek zámku se vešel a zachoval proporce */
+          text-indent: -9999px; /* Skryje text posunutím mimo zobrazenou oblast */
+          overflow: hidden; /* Zabraňuje zobrazení textu mimo element */
+          margin-bottom: 15px;
+          margin-top: 10px;
+        }
+      }
+
+      @media only screen and (min-width: 768px) {
+        .switcher {
+          font-size: calc(
+            25px + 2vw
+          ); /* Zmenšení a zároveň umožnění růstu s obrazovkou */
+          padding: 5px; /* Větší padding pro lepší ovladatelnost na dotykových zařízeních */
+        }
+
+        .form {
+          padding: 8vw; /* Větší padding pro lepší vzhled na malých obrazovkách */
+          width: 90%; /* Větší šířka formuláře, aby lépe vyplnila menší obrazovky */
+          min-width: 480px; /* Upravená maximální šířka pro menší obrazovky */
+          min-height: 559px;
+        }
+
+        .input-block input {
+          font-size: calc(10px + 1vw); /* Zvětšení fontu pro lepší čitelnost */
+          padding: 12px; /* Větší padding pro lepší vizuální oddělení a ovladatelnost */
         }
 
         .form [type='submit'] {
-            opacity: 0;
-            display: block;
-            min-width: 120px;
-            margin: 30px auto 10px;
-            font-size: 18px;
-            line-height: 40px;
-            border-radius: 25px;
-            border: none;
-            transition: all .3s ease-out;
+          font-size: calc(12px + 1vw); /* Větší font pro snazší čitelnost */
+          padding: 12px 24px; /* Větší padding pro snadnější klikatelnost */
         }
 
+        .section-title {
+          font-size: 60px;
+          letter-spacing: 1px;
+          color: #fff;
+          margin-top: 6rem;
+        }
+        .form-wrapper {
+          animation: hideLayer 0.3s ease-out forwards;
+          margin-top: 90px;
+        }
+        .login-title {
+          margin-top: 90px;
+        }
+        .input-block label {
+          font-size: 36px;
+          color: #a1b4b4;
+        }
         .form-wrapper.is-active .form [type='submit'] {
-            opacity: 1;
-            transform: translateX(0);
-            transition: all .4s ease-in;
+          min-width: 300px;
+          min-height: 80px;
+          font-size: 35px;
         }
-
-        .btn-login {
-            color: #fbfdff;
-            background: #a7e245;
-            transform: translateX(-30%);
+        .form-wrapper.is-active .switcher-login {
+          color: #fff;
+          transform: translateX(113px) translateY(-31px);
         }
-
-        .btn-signup {
-            color: #a7e245;
-            background: #fbfdff;
-            box-shadow: inset 0 0 0 2px #a7e245;
-            transform: translateX(30%);
+      }
+      dialog {
+        padding: 1rem 3rem;
+        background: white;
+        max-width: 700px;
+        padding-top: 2rem;
+        border-radius: 20px;
+        border: 0;
+        box-shadow: 0 5px 30px 0 rgb(0 0 0 / 10%);
+        animation: fadeIn 1s ease both;
+        &::backdrop {
+          animation: fadeIn 1s ease both;
+          background: rgb(255 255 255 / 40%);
+          z-index: 2;
+          backdrop-filter: blur(20px);
         }
-        .hidden { display: none; }
-        .envelope-locked { /* Přidejte styl pro obrázek zamčené obálky */ }
-        .envelope-unlocked { /* Přidejte styl pro obrázek odemčené obálky */ }
-        
-        /*GLO Wrappwer*/
-        .glo-wrapper{
-            body {
-            background: #e7e9ed;
-            color: #535b61;
-            font-family: "Poppins", sans-serif;
-            font-size: 14px;
-            line-height: 22px;
-            }
-
-            form {
-            padding: 0;
-            margin: 0;
-            display: inline;
-            }
-
-            img {
-            vertical-align: inherit;
-            }
-
-            a, a:focus {
-            color: slategrey;
-            -webkit-transition: all 0.2s ease;
-            transition: all 0.2s ease;
-            }
-
-            a:hover, a:active {
-            color: #0c2f55;
-            text-decoration: none;
-            -webkit-transition: all 0.2s ease;
-            transition: all 0.2s ease;
-            }
-
-            a:focus, a:active,
-            .btn.active.focus,
-            .btn.active:focus,
-            .btn.focus,
-            .btn:active.focus,
-            .btn:active:focus,
-            .btn:focus,
-            button:focus,
-            button:active {
-            outline: none;
-            }
-
-            p {
-            line-height: 1;
-            font-size: 30px;
-            }
-
-            blockquote {
-            border-left: 5px solid #eee;
-            padding: 10px 20px;
-            }
-
-            iframe {
-            border: 0 !important;
-            }
-
-            h1, h2, h3, h4, h5, h6 {
-            color: #0c2f54;
-            font-family: "Poppins", sans-serif;
-            }
-
-            .table {
-            color: #535b61;
-            }
-
-            .table-hover tbody tr:hover {
-            background-color: #f6f7f8;
-            }
-
-            /* =================================== */
-            /*  Helpers Classes
-            /* =================================== */
-            /* Border Radius */
-            .rounded-top-0 {
-            border-top-left-radius: 0px !important;
-            border-top-right-radius: 0px !important;
-            }
-
-            .rounded-bottom-0 {
-            border-bottom-left-radius: 0px !important;
-            border-bottom-right-radius: 0px !important;
-            }
-
-            .rounded-left-0 {
-            border-top-left-radius: 0px !important;
-            border-bottom-left-radius: 0px !important;
-            }
-
-            .rounded-right-0 {
-            border-top-right-radius: 0px !important;
-            border-bottom-right-radius: 0px !important;
-            }
-
-            /* Text Size */
-            .text-0 {
-            font-size: 11px !important;
-            font-size: 0.6875rem !important;
-            }
-
-            .text-1 {
-            font-size: 12px !important;
-            font-size: 0.75rem !important;
-            }
-
-            .text-2 {
-            font-size: 14px !important;
-            font-size: 0.875rem !important;
-            }
-
-            .text-3 {
-            font-size: 16px !important;
-            font-size: 1rem !important;
-            }
-
-            .text-4 {
-            font-size: 18px !important;
-            font-size: 1.125rem !important;
-            }
-
-            .text-5 {
-            font-size: 21px !important;
-            font-size: 1.3125rem !important;
-            }
-
-            .text-6 {
-            font-size: 24px !important;
-            font-size: 1.50rem !important;
-            }
-
-            .text-7 {
-            font-size: 35px !important;
-            }
-
-            .text-8 {
-            font-size: 32px !important;
-            font-size: 2rem !important;
-            }
-
-            .text-9 {
-            font-size: 36px !important;
-            font-size: 2.25rem !important;
-            }
-
-            .text-10 {
-            font-size: 40px !important;
-            font-size: 2.50rem !important;
-            }
-
-            .text-11 {
-            font-size: 44px !important;
-            font-size: 2.75rem !important;
-            }
-
-            .text-12 {
-            font-size: 48px !important;
-            font-size: 3rem !important;
-            }
-
-            .text-13 {
-            font-size: 52px !important;
-            font-size: 3.25rem !important;
-            }
-
-            .text-14 {
-            font-size: 56px !important;
-            font-size: 3.50rem !important;
-            }
-
-            .text-15 {
-            font-size: 60px !important;
-            font-size: 3.75rem !important;
-            }
-
-            .text-16 {
-            font-size: 64px !important;
-            font-size: 4rem !important;
-            }
-
-            .text-17 {
-            font-size: 72px !important;
-            font-size: 4.5rem !important;
-            }
-
-            .text-18 {
-            font-size: 80px !important;
-            font-size: 5rem !important;
-            }
-
-            .text-19 {
-            font-size: 84px !important;
-            font-size: 5.25rem !important;
-            }
-
-            .text-20 {
-            font-size: 92px !important;
-            font-size: 5.75rem !important;
-            }
-
-            /* Line height */
-            .line-height-07 {
-            line-height: 0.7 !important;
-            }
-
-            .line-height-1 {
-            line-height: 1 !important;
-            }
-
-            .line-height-2 {
-            line-height: 1.2 !important;
-            }
-
-            .line-height-3 {
-            line-height: 1.4 !important;
-            }
-
-            .line-height-4 {
-            line-height: 1.6 !important;
-            }
-
-            .line-height-5 {
-            line-height: 1.8 !important;
-            }
-
-            /* Font Weight */
-            .font-weight-100 {
-            font-weight: 100 !important;
-            }
-
-            .font-weight-200 {
-            font-weight: 200 !important;
-            }
-
-            .font-weight-300 {
-            font-weight: 300 !important;
-            }
-
-            .font-weight-400 {
-            font-weight: 400 !important;
-            }
-
-            .font-weight-500 {
-            font-weight: 500 !important;
-            }
-
-            .font-weight-600 {
-            font-weight: 600 !important;
-            }
-
-            .font-weight-700 {
-            font-weight: 700 !important;
-            }
-
-            .font-weight-800 {
-            font-weight: 800 !important;
-            }
-
-            .font-weight-900 {
-            font-weight: 900 !important;
-            }
-
-            /* Opacity */
-            .opacity-0 {
-            opacity: 0;
-            }
-
-            .opacity-1 {
-            opacity: 0.1;
-            }
-
-            .opacity-2 {
-            opacity: 0.2;
-            }
-
-            .opacity-3 {
-            opacity: 0.3;
-            }
-
-            .opacity-4 {
-            opacity: 0.4;
-            }
-
-            .opacity-5 {
-            opacity: 0.5;
-            }
-
-            .opacity-6 {
-            opacity: 0.6;
-            }
-
-            .opacity-7 {
-            opacity: 0.7;
-            }
-
-            .opacity-8 {
-            opacity: 0.8;
-            }
-
-            .opacity-9 {
-            opacity: 0.9;
-            }
-
-            .opacity-10 {
-            opacity: 1;
-            }
-
-            /* Background light */
-            .bg-light-1 {
-            background-color: #e9ecef !important;
-            }
-
-            .bg-light-2 {
-            background-color: #dee2e6 !important;
-            }
-
-            .bg-light-3 {
-            background-color: #ced4da !important;
-            }
-
-            .bg-light-4 {
-            background-color: #adb5bd !important;
-            }
-
-            @media print {
-            .table td, .table th {
-                background-color: transparent !important;
-            }
-
-            .table td.bg-light, .table th.bg-light {
-                background-color: #FFF !important;
-            }
-
-            .table td.bg-light-1, .table th.bg-light-1 {
-                background-color: #f9f9fb !important;
-            }
-
-            .table td.bg-light-2, .table th.bg-light-2 {
-                background-color: #f8f8fa !important;
-            }
-
-            .table td.bg-light-3, .table th.bg-light-3 {
-                background-color: #f5f5f5 !important;
-            }
-
-            .table td.bg-light-4, .table th.bg-light-4 {
-                background-color: #eff0f2 !important;
-            }
-
-            .table td.bg-light-5, .table th.bg-light-5 {
-                background-color: #ececec !important;
-            }
-            }
-            /* =================================== */
-            /*  Layouts
-            /* =================================== */
-            .itinerary-container {
-            margin: 15px auto;
-            padding: 70px;
-            max-width: 850px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            -moz-border-radius: 6px;
-            -webkit-border-radius: 6px;
-            -o-border-radius: 6px;
-            border-radius: 6px;
-            margin-top: 50px;
-            }
-
-            @media (max-width: 767px) {
-            .itinerary-container {
-                padding: 35px 20px 70px 20px;
-                margin-top: 0px;
-                border: none;
-                border-radius: 0px;
-            }
-            }
-            /* =================================== */
-            /*  Extras
-            /* =================================== */
-            .bg-primary, .badge-primary {
-            background-color: #0071cc !important;
-            }
-
-            .bg-secondary {
-            background-color: #0c2f55 !important;
-            }
-
-            .text-secondary {
-            color: #0c2f55 !important;
-            }
-
-            .text-primary {
-            color: #0071cc !important;
-            }
-
-            .btn-link {
-            color: #0071cc;
-            }
-
-            .btn-link:hover {
-            color: #0e7fd9 !important;
-            }
-
-            .border-primary {
-            border-color: #0071cc !important;
-            }
-
-            .border-secondary {
-            border-color: #0c2f55 !important;
-            }
-
-            .btn-primary {
-            background-color: #0071cc;
-            border-color: #0071cc;
-            }
-            .btn-primary:hover {
-            background-color: #0e7fd9;
-            border-color: #0e7fd9;
-            }
-
-            .btn-secondary {
-            background-color: #0c2f55;
-            border-color: #0c2f55;
-            }
-
-            .btn-outline-primary {
-            color: #0071cc;
-            border-color: #0071cc;
-            }
-            .btn-outline-primary:hover {
-            background-color: #0071cc;
-            border-color: #0071cc;
-            color: #fff;
-            }
-
-            .btn-outline-secondary {
-            color: #0c2f55;
-            border-color: #0c2f55;
-            }
-            .btn-outline-secondary:hover {
-            background-color: #0c2f55;
-            border-color: #0c2f55;
-            color: #fff;
-            }
-
-            .progress-bar,
-            .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-            background-color: #0071cc;
-            }
-
-            .page-item.active .page-link,
-            .custom-radio .custom-control-input:checked ~ .custom-control-label:before,
-            .custom-control-input:checked ~ .custom-control-label::before,
-            .custom-checkbox .custom-control-input:checked ~ .custom-control-label:before,
-            .custom-control-input:checked ~ .custom-control-label:before {
-            background-color: #0071cc;
-            border-color: #0071cc;
-            }
-
-            .list-group-item.active {
-            background-color: #0071cc;
-            border-color: #0071cc;
-            }
-
-            .page-link {
-            color: #0071cc;
-            }
-            .page-link:hover {
-            color: #0e7fd9;
-            }
-
-            /* Pagination */
-            .page-link {
-            border-color: #f4f4f4;
-            border-radius: 0.25rem;
-            margin: 0 0.3rem;
-            }
-
-            .page-item.disabled .page-link {
-            border-color: #f4f4f4;
-            }
+        .x {
+          filter: grayscale(1);
+          border: none;
+          background: none;
+          position: absolute;
+          top: 15px;
+          right: 10px;
+          transition: ease filter, transform 0.3s;
+          cursor: pointer;
+          transform-origin: center;
+          font-size: 1.7rem;
+          &:hover {
+            filter: grayscale(0);
+            transform: scale(1.1);
+          }
         }
-        /*Letter Card style*/
-        .card-letter-wrapper{
-body {
-  background-color: #3b4465;
-}
-.ag-courses_box {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: flex-start;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-
-  padding: 50px;
-}
-.ag-courses_item {
-    -ms-flex-preferred-size: calc(33.33333% - 30px);
-    flex-basis: calc(33.333% - 15px);
-    margin: 0 7px 30px;
-    overflow: hidden;
-    border-radius: 28px;
-}
-.ag-courses-item_link {
-  display: block;
-  padding: 30px 20px;
-  background-color: slategray;
-
-  overflow: hidden;
-
-  position: relative;
-}
-.ag-courses-item_link:hover,
-.ag-courses-item_link:hover .ag-courses-item_date {
-  text-decoration: none;
-  color: #FFF;
-}
-.ag-courses-item_link:hover .ag-courses-item_bg {
-  -webkit-transform: scale(10);
-  -ms-transform: scale(10);
-  transform: scale(10);
-}
-.ag-courses-item_title {
-  min-height: 87px;
-  margin: 0 0 25px;
-
-  overflow: hidden;
-
-  font-weight: bold;
-  font-size: 30px;
-  color: #FFF;
-
-  z-index: 2;
-  position: relative;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 60px;
-}
-.ag-courses-item_date-box {
-  font-size: 18px;
-  color: #FFF;
-
-  z-index: 2;
-  position: relative;
-}
-.ag-courses-item_date {
-  font-weight: bold;
-  color: #f9b234;
-
-  -webkit-transition: color .5s ease;
-  -o-transition: color .5s ease;
-  transition: color .5s ease
-}
-.ag-courses-item_bg {
-  height: 128px;
-  width: 128px;
-  background-color: #f9b234;
-
-  z-index: 1;
-  position: absolute;
-  top: -75px;
-  right: -75px;
-
-  border-radius: 50%;
-
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
-  transition: all .5s ease;
-}
-.ag-courses_item:nth-child(2n) .ag-courses-item_bg {
-  background-color: #3ecd5e;
-}
-.ag-courses_item:nth-child(3n) .ag-courses-item_bg {
-  background-color: #e44002;
-}
-.ag-courses_item:nth-child(4n) .ag-courses-item_bg {
-  background-color: #952aff;
-}
-.ag-courses_item:nth-child(5n) .ag-courses-item_bg {
-  background-color: #cd3e94;
-}
-.ag-courses_item:nth-child(6n) .ag-courses-item_bg {
-  background-color: #4c49ea;
-}
-
-
-
-@media only screen and (max-width: 979px) {
-  .ag-courses_item {
-    -ms-flex-preferred-size: calc(33.33% - 30px);
-    flex-basis: calc(33.33% - 30px);
-  }
-  .ag-courses-item_title {
-    font-size: 24px;
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  .ag-format-container {
-    width: 96%;
-  }
-
-}
-@media only screen and (max-width: 639px) {
-  .ag-courses_item {
-    -ms-flex-preferred-size: 100%;
-    flex-basis: 100%;
-  }
-  .ag-courses-item_title {
-    min-height: 72px;
-    line-height: 1;
-
-    font-size: 24px;
-  }
-  .ag-courses-item_link {
-    padding: 22px 40px;
-  }
-  .ag-courses-item_date-box {
-    font-size: 16px;
-  }
-}
-.lock-letter {
-    font-size: 80px; /* Příklad velikosti písma */    
-    height: 1em; /* Výška zámku odpovídá velikosti písma */    
-    background: url('lock.png') no-repeat center center; /* Cesta k obrázku zámku */
-    background-size: contain; /* Ujistěte se, že obrázek zámku se vešel a zachoval proporce */
-    text-indent: -9999px; /* Skryje text posunutím mimo zobrazenou oblast */
-    overflow: hidden; /* Zabraňuje zobrazení textu mimo element */
-    margin-bottom: 15px;
-    margin-top: 10px;
-}
-.done-letter {
-    font-size: 80px; /* Příklad velikosti písma */    
-    height: 1em; /* Výška zámku odpovídá velikosti písma */    
-    background: url('check-mark.svg') no-repeat center center; /* Cesta k obrázku zámku */
-    background-size: contain; /* Ujistěte se, že obrázek zámku se vešel a zachoval proporce */
-    text-indent: -9999px; /* Skryje text posunutím mimo zobrazenou oblast */
-    overflow: hidden; /* Zabraňuje zobrazení textu mimo element */
-    margin-bottom: 15px;
-    margin-top: 10px;
-}
-}
-
-        @media only screen and (min-width: 768px) {
-            .switcher {
-                font-size: calc(25px + 2vw); /* Zmenšení a zároveň umožnění růstu s obrazovkou */
-                padding: 5px; /* Větší padding pro lepší ovladatelnost na dotykových zařízeních */
-            }
-
-            .form {
-                padding: 8vw; /* Větší padding pro lepší vzhled na malých obrazovkách */
-                width: 90%; /* Větší šířka formuláře, aby lépe vyplnila menší obrazovky */
-                min-width: 480px; /* Upravená maximální šířka pro menší obrazovky */
-                min-height: 559px;
-            }
-
-            .input-block input {
-                font-size: calc(10px + 1vw); /* Zvětšení fontu pro lepší čitelnost */
-                padding: 12px; /* Větší padding pro lepší vizuální oddělení a ovladatelnost */
-            }
-
-            .form [type='submit'] {
-                font-size: calc(12px + 1vw); /* Větší font pro snazší čitelnost */
-                padding: 12px 24px; /* Větší padding pro snadnější klikatelnost */
-            }
-
-            .section-title {
-                font-size: 60px;
-                letter-spacing: 1px;
-                color: #fff;
-                margin-top: 6rem;
-            }
-            .form-wrapper {
-                animation: hideLayer .3s ease-out forwards;
-                margin-top: 90px;
-            }
-            .login-title {
-                margin-top: 90px;
-            }
-            .input-block label {
-            font-size: 36px;
-            color: #a1b4b4;
-            }
-            .form-wrapper.is-active .form [type='submit'] {
-                min-width: 300px;
-                min-height: 80px;
-                font-size: 35px;
-            }
-            .form-wrapper.is-active .switcher-login {
-                color: #fff;
-                transform: translateX(113px) translateY(-31px);
-            }
+        h2 {
+          font-weight: 600;
+          font-size: 4rem;
+          padding-bottom: 1rem;
         }
-        dialog {
-	padding: 1rem 3rem;
-	background: white;
-	max-width: 700px;
-	padding-top: 2rem;
-	border-radius: 20px;
-	border: 0;
-	box-shadow: 0 5px 30px 0 rgb(0 0 0 / 10%);
-	animation: fadeIn 1s ease both;
-	&::backdrop {
-		animation: fadeIn 1s ease both;
-		background: rgb(255 255 255 / 40%);
-		z-index: 2;
-		backdrop-filter: blur(20px);
-	}
-	.x {
-		filter: grayscale(1);
-		border: none;
-		background: none;
-		position: absolute;
-		top: 15px;
-		right: 10px;
-		transition: ease filter, transform 0.3s;
-		cursor: pointer;
-		transform-origin: center;
-    font-size: 1.7rem;
-		&:hover {
-			filter: grayscale(0);
-			transform: scale(1.1);
-		}
-	}
-  h2 {
-		font-weight: 600;
-		font-size: 4rem;
-		padding-bottom: 1rem;
-	}
-	p {
-		font-size: 2.5rem !important;
-		line-height: 1.3rem;
-		padding: 0.5rem 0;
-		a {
-			&:visited {
-				color: rgb(var(--vs-primary));
-			}
-		}
-	}
-}
-.tooltip {            
-            position: absolute;
-            right: 5rem;
-            font-size: 2.2rem;
-            display: inline-block;
-            border-bottom: 1px dotted black; /* Pokud chcete, aby otazník vypadal jako odkaz */
+        p {
+          font-size: 2.5rem !important;
+          line-height: 1.3rem;
+          padding: 0.5rem 0;
+          a {
+            &:visited {
+              color: rgb(var(--vs-primary));
+            }
+          }
         }
+      }
+      .tooltip {
+        position: absolute;
+        right: 5rem;
+        font-size: 2.2rem;
+        display: inline-block;
+        border-bottom: 1px dotted black; /* Pokud chcete, aby otazník vypadal jako odkaz */
+      }
 
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 120px;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 0;
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
 
-            /* Pozice */
-            position: absolute;
-            z-index: 1;
-            bottom: 100%;
-            left: 50%;
-            margin-left: -60px; /* Polovina šířky tooltipu pro centrování */
+        /* Pozice */
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -60px; /* Polovina šířky tooltipu pro centrování */
 
-            /* Efekty */
-            opacity: 0;
-            transition: opacity 0.6s;
+        /* Efekty */
+        opacity: 0;
+        transition: opacity 0.6s;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+      #congrats-label {
+        background-color: #3ecd5e;
+        border-radius: 50px;
+        margin-bottom: 2rem;
+
+        label {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 3rem;
+          padding: 2rem;
         }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-  #congrats-label {
-    background-color: #3ecd5e;
-    border-radius: 50px;
-    margin-bottom: 2rem;
-
-    label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;    
-      padding: 2rem;
-    }
-  }
-    
-  </style>
-</head>
-<body>
-
+      }
+    </style>
+  </head>
+  <body>
     <section id="loginPage" class="forms-section">
-        <h1 class="section-title">Venkovní šifrovací hry</h1>
-        <div class="forms">
-          <div class="form-wrapper is-active">
-            <button type="button" class="switcher switcher-login">
-                Přihlásit se
-                <span class="underline"></span>
-            </button>
-            <form class="form form-login" onsubmit="event.preventDefault(); login();">
-              <fieldset>
-                <legend>Prosím, zadejte název týmu a heslo pro vstup do hry.</legend>
-                <div class="input-block">
-                  <label for="login-email">Kód pro vstup</label>
-                  <input id="login-email" type="text" required>
-                </div>
-                <div class="input-block">
-                  <label for="login-password">Heslo</label>
-                  <input id="login-password" type="password" required>
-                </div>
-              </fieldset>
-              <button type="submit" class="btn-login">Potvrdit</button>
-            </form>
-          </div>
-          <div class="form-wrapper">
-            <form class="form form-signup">
-              <fieldset>
-                <legend>Please, enter your email, password and password confirmation for sign up.</legend>
-                <div class="input-block">
-                  <label for="signup-email">E-mail</label>
-                  <input id="signup-email" type="email" required>
-                </div>
-                <div class="input-block">
-                  <label for="signup-password">Password</label>
-                  <input id="signup-password" type="password" required>
-                </div>
-                <div class="input-block">
-                  <label for="signup-password-confirm">Confirm password</label>
-                  <input id="signup-password-confirm" type="password" required>
-                </div>
-              </fieldset>
-              <button type="submit" class="btn-signup">Continue</button>
-            </form>
-          </div>
+      <h1 class="section-title">Venkovní šifrovací hry</h1>
+      <div class="forms">
+        <div class="form-wrapper is-active">
+          <button type="button" class="switcher switcher-login">
+            Přihlásit se
+            <span class="underline"></span>
+          </button>
+          <form
+            class="form form-login"
+            onsubmit="event.preventDefault(); login();"
+          >
+            <fieldset>
+              <legend>
+                Prosím, zadejte název týmu a heslo pro vstup do hry.
+              </legend>
+              <div class="input-block">
+                <label for="login-email">Kód pro vstup</label>
+                <input id="login-email" type="text" required />
+              </div>
+              <div class="input-block">
+                <label for="login-password">Heslo</label>
+                <input id="login-password" type="password" required />
+              </div>
+            </fieldset>
+            <button type="submit" class="btn-login">Potvrdit</button>
+          </form>
         </div>
-      </section>
+        <div class="form-wrapper">
+          <form class="form form-signup">
+            <fieldset>
+              <legend>
+                Please, enter your email, password and password confirmation for
+                sign up.
+              </legend>
+              <div class="input-block">
+                <label for="signup-email">E-mail</label>
+                <input id="signup-email" type="email" required />
+              </div>
+              <div class="input-block">
+                <label for="signup-password">Password</label>
+                <input id="signup-password" type="password" required />
+              </div>
+              <div class="input-block">
+                <label for="signup-password-confirm">Confirm password</label>
+                <input id="signup-password-confirm" type="password" required />
+              </div>
+            </fieldset>
+            <button type="submit" class="btn-signup">Continue</button>
+          </form>
+        </div>
+      </div>
+    </section>
 
     <section id="teamInfoPage" class="forms-section hidden">
-        <h1 class="section-title">Venkovní šifrovací hry</h1>
-        <div class="forms">
-          <div class="form-wrapper is-active">
-            <button type="button" class="switcher switcher-login">
-                Registrační údaje
-                <span class="underline"></span>
-            </button>
-            <form class="form form-login" onsubmit="event.preventDefault(); submitTeamInfo();">
-              <fieldset>
-                <legend>Prosím, zadejte název týmu a heslo pro vstup do hry.</legend>
-                <div class="input-block">
-                  <label for="login-email">Jméno týmu</label>
-                  <input id="teamName" type="text" required>
-                </div>
-                <div class="input-block">
-                  <label for="login-password">Jméno kapitána</label>
-                  <input id="captainName" type="text" required>
-                </div>
-              </fieldset>
-              <button type="submit" class="btn-login">Potvrdit</button>
-            </form>
-          </div>
-          <div class="form-wrapper">
-            <form class="form form-signup">
-              <fieldset>
-                <legend>Please, enter your email, password and password confirmation for sign up.</legend>
-                <div class="input-block">
-                  <label for="signup-email">E-mail</label>
-                  <input id="signup-email" type="email" required>
-                </div>
-                <div class="input-block">
-                  <label for="signup-password">Password</label>
-                  <input id="signup-password" type="password" required>
-                </div>
-                <div class="input-block">
-                  <label for="signup-password-confirm">Confirm password</label>
-                  <input id="signup-password-confirm" type="password" required>
-                </div>
-              </fieldset>
-              <button type="submit" class="btn-signup">Continue</button>
-            </form>
-          </div>
+      <h1 class="section-title">Venkovní šifrovací hry</h1>
+      <div class="forms">
+        <div class="form-wrapper is-active">
+          <button type="button" class="switcher switcher-login">
+            Registrační údaje
+            <span class="underline"></span>
+          </button>
+          <form
+            class="form form-login"
+            onsubmit="event.preventDefault(); submitTeamInfo();"
+          >
+            <fieldset>
+              <legend>
+                Prosím, zadejte název týmu a heslo pro vstup do hry.
+              </legend>
+              <div class="input-block">
+                <label for="login-email">Jméno týmu</label>
+                <input id="teamName" type="text" required />
+              </div>
+              <div class="input-block">
+                <label for="login-password">Jméno kapitána</label>
+                <input id="captainName" type="text" required />
+              </div>
+            </fieldset>
+            <button type="submit" class="btn-login">Potvrdit</button>
+          </form>
         </div>
-      </section>
+        <div class="form-wrapper">
+          <form class="form form-signup">
+            <fieldset>
+              <legend>
+                Please, enter your email, password and password confirmation for
+                sign up.
+              </legend>
+              <div class="input-block">
+                <label for="signup-email">E-mail</label>
+                <input id="signup-email" type="email" required />
+              </div>
+              <div class="input-block">
+                <label for="signup-password">Password</label>
+                <input id="signup-password" type="password" required />
+              </div>
+              <div class="input-block">
+                <label for="signup-password-confirm">Confirm password</label>
+                <input id="signup-password-confirm" type="password" required />
+              </div>
+            </fieldset>
+            <button type="submit" class="btn-signup">Continue</button>
+          </form>
+        </div>
+      </div>
+    </section>
 
-</div>
-
-<div id="gamePage" class="glo-wrapper hidden">
-    <div class="container-fluid itinerary-container"> 
+    <div id="gamePage" class="glo-wrapper hidden">
+      <div class="container-fluid itinerary-container">
         <!-- Header -->
         <header>
           <div class="row align-items-center">
-            <div class="col-sm-5 text-center text-sm-right">              
+            <div class="col-sm-5 text-center text-sm-right">
               <h4 class="text-7 mb-0">Venkovní šifrovací hry</h4>
               <div id="congrats-label" class="hidden">
                 <label>Gratulujeme 🎉🎉🎊</label>
@@ -1199,460 +1238,522 @@ body {
               </div>
             </div>
           </div>
-          <hr class="my-4">
+          <hr class="my-4" />
         </header>
-        <!-- Header End --> 
-        
+        <!-- Header End -->
+
         <!-- Main Content -->
         <main>
           <div class="row">
             <div class="col-sm-4">
-                <p id="displayTeamName"></p>
-                <p id="displayCaptainName"></p>
+              <p id="displayTeamName"></p>
+              <p id="displayCaptainName"></p>
             </div>
             <div class="col-sm-4">
-                <p id="totalTime">Celkový čas: 00:00</p>
+              <p id="totalTime">Celkový čas: 00:00</p>
             </div>
           </div>
         </main>
-        <!-- Main Content End --> 
-        
+        <!-- Main Content End -->
+
         <!-- Footer -->
         <footer class="text-center mt-3">
-            <hr>
-            <strong id="letterTime" style="font-size: 30px; color: red;">Čas do otevření další obálky</strong>
+          <hr />
+          <strong id="letterTime" style="font-size: 30px; color: red"
+            >Čas do otevření další obálky</strong
+          >
         </footer>
-        <!-- Footer End --> 
-        
+        <!-- Footer End -->
       </div>
-    <div id="envelopes" class="card-letter-wrapper">
+      <div id="envelopes" class="card-letter-wrapper">
         <!-- Zde budou dopisy -->
         <div class="ag-format-container">
-            <div class="ag-courses_box">
-              <div class="ag-courses_item letter_A open">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_A" class="ag-courses-item_title lock-letter">
-                    A
-                  </div>                            
-                </a>
-              </div>
-          
-              <div class="ag-courses_item letter_B">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_B" class="ag-courses-item_title lock-letter">
-                    B
-                  </div>
-                </a>
-              </div>
-              <div class="ag-courses_item letter_C" style="border: solid; border-color: #e44002; border-width: 6px;">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_C" class="ag-courses-item_title lock-letter">
-                    C
-                  </div>
-                </a>
-              </div>
-              <div class="ag-courses_item letter_D">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_D" class="ag-courses-item_title lock-letter">
-                    D
-                  </div>
-                </a>
-              </div>
-              <div class="ag-courses_item letter_E" style="border: solid; border-color: #cd3e94; border-width: 6px;">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_E" class="ag-courses-item_title lock-letter">
-                    E
-                  </div>
-                </a>
-              </div>
-              <div class="ag-courses_item letter_F">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_F" class="ag-courses-item_title lock-letter">
-                    F
-                  </div>
-                </a>
-              </div>
-              <div class="ag-courses_item letter_G" style="border: solid; border-color: #f9b234; border-width: 6px;">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_G" class="ag-courses-item_title lock-letter">
-                    G
-                  </div>
-                </a>
-              </div>
-              <div class="ag-courses_item letter_H">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_H" class="ag-courses-item_title lock-letter">
-                    H
-                  </div>
-                </a>
-              </div>
-              <div class="ag-courses_item letter_I">
-                <a href="#" class="ag-courses-item_link">
-                  <div class="ag-courses-item_bg"></div>
-                  <div id="letter_I" class="ag-courses-item_title lock-letter">
-                    I
-                  </div>
-                </a>
-              </div>
-             
-            </div>
-        </div>
-        <div class="ag-courses_item letter_FINAL" style="border: solid; border-color: #3ecd5e; border-width: 6px;">
-            <a href="#" class="ag-courses-item_link">
+          <div class="ag-courses_box">
+            <div class="ag-courses_item letter_A open">
+              <a href="#" class="ag-courses-item_link">
                 <div class="ag-courses-item_bg"></div>
-                <div id="letter_FINAL" class="ag-courses-item_title lock-letter">
-                Finální úloha
+                <div id="letter_A" class="ag-courses-item_title lock-letter">
+                  A
                 </div>
-            </a>
+              </a>
+            </div>
+
+            <div class="ag-courses_item letter_B">
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_B" class="ag-courses-item_title lock-letter">
+                  B
+                </div>
+              </a>
+            </div>
+            <div
+              class="ag-courses_item letter_C"
+              style="border: solid; border-color: #e44002; border-width: 6px"
+            >
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_C" class="ag-courses-item_title lock-letter">
+                  C
+                </div>
+              </a>
+            </div>
+            <div class="ag-courses_item letter_D">
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_D" class="ag-courses-item_title lock-letter">
+                  D
+                </div>
+              </a>
+            </div>
+            <div
+              class="ag-courses_item letter_E"
+              style="border: solid; border-color: #cd3e94; border-width: 6px"
+            >
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_E" class="ag-courses-item_title lock-letter">
+                  E
+                </div>
+              </a>
+            </div>
+            <div class="ag-courses_item letter_F">
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_F" class="ag-courses-item_title lock-letter">
+                  F
+                </div>
+              </a>
+            </div>
+            <div
+              class="ag-courses_item letter_G"
+              style="border: solid; border-color: #f9b234; border-width: 6px"
+            >
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_G" class="ag-courses-item_title lock-letter">
+                  G
+                </div>
+              </a>
+            </div>
+            <div class="ag-courses_item letter_H">
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_H" class="ag-courses-item_title lock-letter">
+                  H
+                </div>
+              </a>
+            </div>
+            <div class="ag-courses_item letter_I">
+              <a href="#" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg"></div>
+                <div id="letter_I" class="ag-courses-item_title lock-letter">
+                  I
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
-    </div>
-    <dialog id="dialog">
-      <h2 id="dialogTitle"></h2>
-      <form class="form form-login" onsubmit="event.preventDefault(); checkAnswer(event);">
-      <div class="input-block">
-        <label>Zde je prostor pro vložení odpovědi:</label>
-        
-        <div id="finalLetterInputs" class="hidden">
-          <label>Odpověď 1</label>
-          <div class="tooltip">?
-            <span class="tooltiptext">Kdy</span>
-          </div>
-          <input id="userAnswer2" type="text">
-          <label>Odpověď 2</label>
-          <div class="tooltip">?
-            <span class="tooltiptext">Kde</span>
-          </div>
-          <input id="userAnswer3" type="text">
-          <label>Odpověď 3</label>
-          <div class="tooltip">?
-            <span class="tooltiptext">Kam</span>
-          </div>
+        <div
+          class="ag-courses_item letter_FINAL"
+          style="border: solid; border-color: #3ecd5e; border-width: 6px"
+        >
+          <a href="#" class="ag-courses-item_link">
+            <div class="ag-courses-item_bg"></div>
+            <div id="letter_FINAL" class="ag-courses-item_title lock-letter">
+              Finální úloha
+            </div>
+          </a>
         </div>
-        <input id="userAnswer" type="text" required>
       </div>
-      <button class="btn-login" style="opacity: 1; background-color: #952aff; padding: 12px;" type="submit">Odeslat</button>
-      </form>
-      <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
-      <div id="feedback" style="font-size: 2rem;"></div>
-    </dialog>
-</div>
+      <dialog id="dialog">
+        <h2 id="dialogTitle"></h2>
+        <form
+          class="form form-login"
+          onsubmit="event.preventDefault(); checkAnswer(event);"
+        >
+          <div class="input-block">
+            <label>Zde je prostor pro vložení odpovědi:</label>
 
-<script>
-let currentPage = 'loginPage';
-const userInfo = { username: 'XTB55', password: 'ab123' };
+            <div id="finalLetterInputs" class="hidden">
+              <label>Odpověď 1</label>
+              <div class="tooltip">
+                ?
+                <span class="tooltiptext">Kdy</span>
+              </div>
+              <input id="userAnswer2" type="text" />
+              <label>Odpověď 2</label>
+              <div class="tooltip">
+                ?
+                <span class="tooltiptext">Kde</span>
+              </div>
+              <input id="userAnswer3" type="text" />
+              <label>Odpověď 3</label>
+              <div class="tooltip">
+                ?
+                <span class="tooltiptext">Kam</span>
+              </div>
+            </div>
+            <input id="userAnswer" type="text" required />
+          </div>
+          <button
+            class="btn-login"
+            style="opacity: 1; background-color: #952aff; padding: 12px"
+            type="submit"
+          >
+            Odeslat
+          </button>
+        </form>
+        <button onclick="window.dialog.close();" aria-label="close" class="x">
+          ❌
+        </button>
+        <div id="feedback" style="font-size: 2rem"></div>
+      </dialog>
+    </div>
 
-function login() {
-    const username = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    if (username === userInfo.username && password === userInfo.password) {
-        changePage('teamInfoPage');
-    } else {
-        alert('Nesprávné přihlašovací údaje.');
-    }
-}
+    <script>
+      let currentPage = 'loginPage'
+      const userInfo = { username: 'XTB55', password: 'ab123' }
 
-function submitTeamInfo() {
-    const teamName = document.getElementById('teamName').value;
-    const captainName = document.getElementById('captainName').value;
-    document.getElementById('displayTeamName').textContent = 'Jméno týmu: ' + teamName;
-    document.getElementById('displayCaptainName').textContent = 'Jméno kapitána: ' + captainName;
-    localStorage.setItem('teamName', teamName);
-    localStorage.setItem('captainName', captainName);
-    changePage('gamePage');
-    // Zde inicializovat časovač
-}
-
-const correctAnswers = {
-  A: "22",
-  B: "pepco",
-  C: "topení",
-  D: "josef kajetán tyl",
-  E: "malý princ",
-  F: "norsko",
-  G: "111+113+115+117",
-  H: "sedmikráska",
-  I: "24",
-  FINAL: "bídníci",
-  FINAL1: "1.června",
-  FINAL2: "music hall goja"
-}
-
-const dialogTexts = {
-  A: "A",
-  B: "B",
-  C: "C - ✉️",
-  D: "D",
-  E: "E - ✉️",
-  F: "F",
-  G: "G - ✉️",
-  H: "H",
-  I: "I",
-  FINAL: "Finální úloha - ✉️",
-}
-
-const letterState = {
-  unlocked: "unlocked",
-  locked: "locked",
-  done: "done"
-}
-
-const unlockedBoxes = {
-  A: letterState.unlocked,
-  B: letterState.locked,
-  C: letterState.locked,
-  D: letterState.locked,
-  E: letterState.locked,
-  F: letterState.locked,
-  G: letterState.locked,
-  H: letterState.locked,
-  I: letterState.locked,
-  FINAL: letterState.locked,
-}
-
-function areAllLettersDone() {
-  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
-  // Projde klíče od A do I a zkontroluje, zda všechny mají stav 'done'
-  for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
-    const letter = String.fromCharCode(i);
-    if (unlockedBoxesArr[letter] !== letterState.done) {      
-      return false; // Pokud nějaký prvek nemá stav 'done', vrátí false
-    }
-  }  
-  return true; // Všechny prvky mají stav 'done'
-}
-
-function compareAnswers (letter) {
-  // Definujte správnou odpověď
-  var correctAnswer = correctAnswers[letter];  
-  // Získejte uživatelem zadanou odpověď
-  var userAnswer = document.getElementById("userAnswer").value;
-  if(letter === "FINAL") {
-    var correctAnswer1 = correctAnswers[`${letter}1`]; 
-    var correctAnswer2 = correctAnswers[`${letter}2`];    
-    var userAnswer1 = document.getElementById("userAnswer2").value;
-    var userAnswer2 = document.getElementById("userAnswer3").value;
-    return ((userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()) &&  (userAnswer1.trim().toLowerCase() === correctAnswer1.toLowerCase()) &&  (userAnswer2.trim().toLowerCase() === correctAnswer2.toLowerCase()))
-  } else {
-    return userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()
-  }
-}
-
-function convertMsToTime(milliseconds) {
-    let seconds = Math.floor(milliseconds / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
-  
-    seconds = seconds % 60;
-    minutes = minutes % 60;
-  
-    // Přidá vedoucí nuly, pokud je hodnota menší než 10
-    hours = hours < 10 ? '0' + hours : hours;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-  
-    return `Celkový čas: ${hours}:${minutes}:${seconds}`;
-}
-
-function setFinalState() {
-  var feedbackElement = document.getElementById("feedback");
-  feedbackElement.innerHTML = "";
-  document.getElementById("userAnswer2").value = "";
-  document.getElementById("userAnswer3").value = "";
-  document.getElementById("congrats-label").classList.remove("hidden");
-  document.getElementById("total-finish-time").textContent = convertMsToTime(localStorage.getItem("final_time"));
-  document.getElementById("totalTime").style.display = "none";
-  document.getElementById("letterTime").style.display = "none";
-}
-
-function checkAnswer(event) {  
-  var letter = localStorage.getItem("current_letter_title");
-  letter == "Finální úloha" ? letter = "FINAL": "";
-  
-  // Získejte element pro zobrazení zpětné vazby
-  var feedbackElement = document.getElementById("feedback");
-  
-  // Porovnejte uživatelem zadanou odpověď se správnou odpovědí
-  if(compareAnswers(letter)) {
-    // Uživatel zadal správnou odpověď
-    const box = document.querySelector(`.letter_${letter}`);
-    box.style.pointerEvents = 'none';
-    box.querySelector(".ag-courses-item_title").classList.add("done-letter")
-    var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
-    unlockedBoxesArr[letter] = letterState.done;
-    localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxesArr));
-    document.getElementById("userAnswer").value = "";
-    window.dialog.close();
-    var feedbackElement = document.getElementById("feedback");
-    feedbackElement.innerHTML = "";
-
-    if(letter == "FINAL") {
-      //TODO: Dodelat tlacitko zobrazeni statistik (restart?) -- bude se zobrazovat podle localStorage "state"      
-      localStorage.setItem('state', "done");
-      localStorage.setItem('final_time', localStorage.getItem("elapsedTime"));
-      setFinalState();
-    }
-  } else {
-    // Uživatel zadal nesprávnou odpověď
-    feedbackElement.innerHTML = "Nesprávně, zkuste to znovu.";
-    feedbackElement.style.color = "red";
-  }
-}
-
-function changePage(newPage) {  
-    document.getElementById(currentPage).classList.add('hidden');
-    document.getElementById(newPage).classList.remove('hidden');
-    currentPage = newPage;
-    if(newPage == "gamePage") {
-      startCountdown();
-      startTimer();
-    }
-    localStorage.setItem('currentPage', newPage);
-}
-
-// Funkce pro inicializaci hry, časovače a další logiky...
-// Funkce pro inicializaci časovače
-function startTimer() {            
-            var startTime = (Date.now() - localStorage.getItem('elapsedTime')) || Date.now(); 
-
-            // Funkce pro aktualizaci času
-            function updateTimer() {
-                var elapsedTime = Date.now() - startTime;
-                var seconds = Math.floor((elapsedTime / 1000) % 60);
-                var minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
-                var hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
-
-                // Přidání vedoucí nuly, pokud je hodnota menší než 10
-                seconds = (seconds < 10) ? "0" + seconds : seconds;
-                minutes = (minutes < 10) ? "0" + minutes : minutes;
-                hours = (hours < 10) ? "0" + hours : hours;
-
-                // Aktualizace zobrazení času
-                document.getElementById("totalTime").textContent = "Celkový čas: " + hours + ":" + minutes + ":" + seconds;
-                localStorage.setItem('elapsedTime', elapsedTime);
-            }
-
-            // Aktualizace času každou sekundu
-            setInterval(updateTimer, 1000);
-        }
-
- function startCountdown() {    
-    display = document.querySelector('#letterTime');
-    display.style.color = "red";
-    var timer_duration = localStorage.getItem('timer_duration') || 5; //TODO: Změnit čas
-    var timer = timer_duration, minutes, seconds;
-    var countdownInterval = setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = "Čas do otevření další obálky " + minutes + ":" + seconds;
-        localStorage.setItem('timer_duration', (minutes*60 + seconds));
-
-        if (--timer < 0) {
-            clearInterval(countdownInterval);
-            display.textContent = "Čas do otevření další obálky 00:00";
-            display.style.color = "green"; // Změna barvy textu na zelenou po skončení odpočtu
-            localStorage.setItem('can_unlock', true);
-        }
-    }, 1000);
-}
-
-// Funkce, která aktualizuje třídy prvků podle jejich stavů v unlockedBoxes
-function updateLetterClasses() {
-  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes;   
-  for (var [letter, state] of Object.entries(unlockedBoxesArr)) {
-    letter == "Finální úloha" ? letter = "FINAL": "";
-    const letterElement = document.getElementById(`letter_${letter}`);
-    if (!letterElement) continue; // Pokud prvek neexistuje, pokračujeme dále
-    
-    if (state === letterState.unlocked) {
-      // Odebrání třídy lock-letter
-      letterElement.classList.remove('lock-letter');
-      document.querySelector(`.letter_${letter}`).classList.add('open');
-    } else if (state === letterState.done) {
-      // Odebrání třídy lock-letter, přidání tříd done-letter a open
-      document.querySelector(`.letter_${letter}`).style.pointerEvents = 'none';
-      letterElement.classList.remove('lock-letter');
-      letterElement.classList.add("done-letter");
-      document.querySelector(`.letter_${letter}`).classList.add('open');
-    }
-    // Případ letterState.locked nemusíme řešit, protože nic neupravujeme
-  }
-}
-
-window.onload = function () {    
-    var savedPage = localStorage.getItem('currentPage');
-    var currentState = localStorage.getItem('state');
-    if(savedPage) changePage(savedPage);     
-    updateLetterClasses();           
-    if(savedPage == "gamePage") {
-      startCountdown();
-      startTimer();
-      updateLetterClasses();
-      document.getElementById('displayTeamName').textContent = 'Jméno týmu: ' + localStorage.getItem('teamName', captainName);;
-      document.getElementById('displayCaptainName').textContent = 'Jméno kapitána: ' + localStorage.getItem('captainName', captainName);;;
-
-      if(currentState == "done"){
-        setFinalState();
-      }
-    }    
-
-    // Přidáme posluchače událostí na všechny obálky
-    document.querySelectorAll('.ag-courses_item').forEach(function(item) {
-    item.addEventListener('click', function() {
-        // Zkontroluje, zda je odemykání povoleno
-        can_unlock = localStorage.getItem('can_unlock') || false;        
-        current_letter_title = item.querySelector('.ag-courses-item_title').textContent.trim(); // Najděte potomka uvnitř rodiče
-        localStorage.setItem('current_letter_title', current_letter_title);
-        var letter = localStorage.getItem("current_letter_title");
-        if(this.classList.contains("open")){          
-          letter == "Finální úloha" ? letter = "FINAL": "";
-          document.getElementById('dialogTitle').textContent = dialogTexts[letter];
-          window.dialog.showModal();
+      function login() {
+        const username = document.getElementById('login-email').value
+        const password = document.getElementById('login-password').value
+        if (username === userInfo.username && password === userInfo.password) {
+          changePage('teamInfoPage')
         } else {
-          if (can_unlock === "true" ) {
-              if(letter == "Finální úloha"){
-                if(!areAllLettersDone()){                  
-                  return;
-                }
-                localStorage.setItem('state', "finalState");
-                document.getElementById("finalLetterInputs").classList.remove("hidden");
-                var inputElement1 = document.getElementById('userAnswer2');
-                var inputElement2 = document.getElementById('userAnswer3');
-                inputElement1.required = true;
-                inputElement2.required = true;
-              }
-              this.classList.add("open");              
-              // Najde všechny potomky s třídou 'lock-letter' a odstraní ji
-              this.querySelectorAll('.lock-letter').forEach(function(child) {
-                const letter = localStorage.getItem("current_letter_title");
-                  child.classList.remove('lock-letter');
-                  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes;
-                  unlockedBoxesArr[letter] = letterState.unlocked;
-                  localStorage.setItem("unlockedBoxes", JSON.stringify(unlockedBoxesArr));
-              });
+          alert('Nesprávné přihlašovací údaje.')
+        }
+      }
 
-              // Zablokuje další odemykání dokud nebude 'can_unlock' opět nastaveno na true
-              can_unlock = false;
-              localStorage.setItem('can_unlock', 'false');
-              localStorage.setItem('timer_duration', (3));
-              startCountdown();
+      function submitTeamInfo() {
+        const teamName = document.getElementById('teamName').value
+        const captainName = document.getElementById('captainName').value
+        document.getElementById('displayTeamName').textContent =
+          'Jméno týmu: ' + teamName
+        document.getElementById('displayCaptainName').textContent =
+          'Jméno kapitána: ' + captainName
+        localStorage.setItem('teamName', teamName)
+        localStorage.setItem('captainName', captainName)
+        changePage('gamePage')
+        // Zde inicializovat časovač
+      }
+
+      const correctAnswers = {
+        A: '22',
+        B: 'pepco',
+        C: 'topení',
+        D: 'josef kajetán tyl',
+        E: 'malý princ',
+        F: 'norsko',
+        G: '111+113+115+117',
+        H: 'sedmikráska',
+        I: '24',
+        FINAL: 'bídníci',
+        FINAL1: '1.června',
+        FINAL2: 'music hall goja',
+      }
+
+      const dialogTexts = {
+        A: 'A',
+        B: 'B',
+        C: 'C - ✉️',
+        D: 'D',
+        E: 'E - ✉️',
+        F: 'F',
+        G: 'G - ✉️',
+        H: 'H',
+        I: 'I',
+        FINAL: 'Finální úloha - ✉️',
+      }
+
+      const letterState = {
+        unlocked: 'unlocked',
+        locked: 'locked',
+        done: 'done',
+      }
+
+      const unlockedBoxes = {
+        A: letterState.unlocked,
+        B: letterState.locked,
+        C: letterState.locked,
+        D: letterState.locked,
+        E: letterState.locked,
+        F: letterState.locked,
+        G: letterState.locked,
+        H: letterState.locked,
+        I: letterState.locked,
+        FINAL: letterState.locked,
+      }
+
+      function areAllLettersDone() {
+        var unlockedBoxesArr =
+          JSON.parse(localStorage.getItem('unlockedBoxes')) || unlockedBoxes
+        // Projde klíče od A do I a zkontroluje, zda všechny mají stav 'done'
+        for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
+          const letter = String.fromCharCode(i)
+          if (unlockedBoxesArr[letter] !== letterState.done) {
+            return false // Pokud nějaký prvek nemá stav 'done', vrátí false
           }
         }
-    });
-});
-};
-</script>
+        return true // Všechny prvky mají stav 'done'
+      }
 
-</body>
+      function compareAnswers(letter) {
+        // Definujte správnou odpověď
+        var correctAnswer = correctAnswers[letter]
+        // Získejte uživatelem zadanou odpověď
+        var userAnswer = document.getElementById('userAnswer').value
+        if (letter === 'FINAL') {
+          var correctAnswer1 = correctAnswers[`${letter}1`]
+          var correctAnswer2 = correctAnswers[`${letter}2`]
+          var userAnswer1 = document.getElementById('userAnswer2').value
+          var userAnswer2 = document.getElementById('userAnswer3').value
+          return (
+            userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase() &&
+            userAnswer1.trim().toLowerCase() === correctAnswer1.toLowerCase() &&
+            userAnswer2.trim().toLowerCase() === correctAnswer2.toLowerCase()
+          )
+        } else {
+          return userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()
+        }
+      }
+
+      function convertMsToTime(milliseconds) {
+        let seconds = Math.floor(milliseconds / 1000)
+        let minutes = Math.floor(seconds / 60)
+        let hours = Math.floor(minutes / 60)
+
+        seconds = seconds % 60
+        minutes = minutes % 60
+
+        // Přidá vedoucí nuly, pokud je hodnota menší než 10
+        hours = hours < 10 ? '0' + hours : hours
+        minutes = minutes < 10 ? '0' + minutes : minutes
+        seconds = seconds < 10 ? '0' + seconds : seconds
+
+        return `Celkový čas: ${hours}:${minutes}:${seconds}`
+      }
+
+      function setFinalState() {
+        var feedbackElement = document.getElementById('feedback')
+        feedbackElement.innerHTML = ''
+        document.getElementById('userAnswer2').value = ''
+        document.getElementById('userAnswer3').value = ''
+        document.getElementById('congrats-label').classList.remove('hidden')
+        document.getElementById('total-finish-time').textContent =
+          convertMsToTime(localStorage.getItem('final_time'))
+        document.getElementById('totalTime').style.display = 'none'
+        document.getElementById('letterTime').style.display = 'none'
+      }
+
+      function checkAnswer(event) {
+        var letter = localStorage.getItem('current_letter_title')
+        letter == 'Finální úloha' ? (letter = 'FINAL') : ''
+
+        // Získejte element pro zobrazení zpětné vazby
+        var feedbackElement = document.getElementById('feedback')
+
+        // Porovnejte uživatelem zadanou odpověď se správnou odpovědí
+        if (compareAnswers(letter)) {
+          // Uživatel zadal správnou odpověď
+          const box = document.querySelector(`.letter_${letter}`)
+          box.style.pointerEvents = 'none'
+          box
+            .querySelector('.ag-courses-item_title')
+            .classList.add('done-letter')
+          var unlockedBoxesArr =
+            JSON.parse(localStorage.getItem('unlockedBoxes')) || unlockedBoxes
+          unlockedBoxesArr[letter] = letterState.done
+          localStorage.setItem(
+            'unlockedBoxes',
+            JSON.stringify(unlockedBoxesArr)
+          )
+          document.getElementById('userAnswer').value = ''
+          window.dialog.close()
+          var feedbackElement = document.getElementById('feedback')
+          feedbackElement.innerHTML = ''
+
+          if (letter == 'FINAL') {
+            //TODO: Dodelat tlacitko zobrazeni statistik (restart?) -- bude se zobrazovat podle localStorage "state"
+            localStorage.setItem('state', 'done')
+            localStorage.setItem(
+              'final_time',
+              localStorage.getItem('elapsedTime')
+            )
+            setFinalState()
+          }
+        } else {
+          // Uživatel zadal nesprávnou odpověď
+          feedbackElement.innerHTML = 'Nesprávně, zkuste to znovu.'
+          feedbackElement.style.color = 'red'
+        }
+      }
+
+      function changePage(newPage) {
+        document.getElementById(currentPage).classList.add('hidden')
+        document.getElementById(newPage).classList.remove('hidden')
+        currentPage = newPage
+        if (newPage == 'gamePage') {
+          startCountdown()
+          startTimer()
+        }
+        localStorage.setItem('currentPage', newPage)
+      }
+
+      // Funkce pro inicializaci hry, časovače a další logiky...
+      // Funkce pro inicializaci časovače
+      function startTimer() {
+        var startTime =
+          Date.now() - localStorage.getItem('elapsedTime') || Date.now()
+
+        // Funkce pro aktualizaci času
+        function updateTimer() {
+          var elapsedTime = Date.now() - startTime
+          var seconds = Math.floor((elapsedTime / 1000) % 60)
+          var minutes = Math.floor((elapsedTime / (1000 * 60)) % 60)
+          var hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24)
+
+          // Přidání vedoucí nuly, pokud je hodnota menší než 10
+          seconds = seconds < 10 ? '0' + seconds : seconds
+          minutes = minutes < 10 ? '0' + minutes : minutes
+          hours = hours < 10 ? '0' + hours : hours
+
+          // Aktualizace zobrazení času
+          document.getElementById('totalTime').textContent =
+            'Celkový čas: ' + hours + ':' + minutes + ':' + seconds
+          localStorage.setItem('elapsedTime', elapsedTime)
+        }
+
+        // Aktualizace času každou sekundu
+        setInterval(updateTimer, 1000)
+      }
+
+      function startCountdown() {
+        display = document.querySelector('#letterTime')
+        display.style.color = 'red'
+        var timer_duration = localStorage.getItem('timer_duration') || 5 //TODO: Změnit čas
+        var timer = timer_duration,
+          minutes,
+          seconds
+        var countdownInterval = setInterval(function () {
+          minutes = parseInt(timer / 60, 10)
+          seconds = parseInt(timer % 60, 10)
+
+          minutes = minutes < 10 ? '0' + minutes : minutes
+          seconds = seconds < 10 ? '0' + seconds : seconds
+
+          display.textContent =
+            'Čas do otevření další obálky ' + minutes + ':' + seconds
+          localStorage.setItem('timer_duration', minutes * 60 + seconds)
+
+          if (--timer < 0) {
+            clearInterval(countdownInterval)
+            display.textContent = 'Čas do otevření další obálky 00:00'
+            display.style.color = 'green' // Změna barvy textu na zelenou po skončení odpočtu
+            localStorage.setItem('can_unlock', true)
+          }
+        }, 1000)
+      }
+
+      // Funkce, která aktualizuje třídy prvků podle jejich stavů v unlockedBoxes
+      function updateLetterClasses() {
+        var unlockedBoxesArr =
+          JSON.parse(localStorage.getItem('unlockedBoxes')) || unlockedBoxes
+        for (var [letter, state] of Object.entries(unlockedBoxesArr)) {
+          letter == 'Finální úloha' ? (letter = 'FINAL') : ''
+          const letterElement = document.getElementById(`letter_${letter}`)
+          if (!letterElement) continue // Pokud prvek neexistuje, pokračujeme dále
+
+          if (state === letterState.unlocked) {
+            // Odebrání třídy lock-letter
+            letterElement.classList.remove('lock-letter')
+            document.querySelector(`.letter_${letter}`).classList.add('open')
+          } else if (state === letterState.done) {
+            // Odebrání třídy lock-letter, přidání tříd done-letter a open
+            document.querySelector(`.letter_${letter}`).style.pointerEvents =
+              'none'
+            letterElement.classList.remove('lock-letter')
+            letterElement.classList.add('done-letter')
+            document.querySelector(`.letter_${letter}`).classList.add('open')
+          }
+          // Případ letterState.locked nemusíme řešit, protože nic neupravujeme
+        }
+      }
+
+      window.onload = function () {
+        var savedPage = localStorage.getItem('currentPage')
+        var currentState = localStorage.getItem('state')
+        if (savedPage) changePage(savedPage)
+        updateLetterClasses()
+        if (savedPage == 'gamePage') {
+          startCountdown()
+          startTimer()
+          updateLetterClasses()
+          document.getElementById('displayTeamName').textContent =
+            'Jméno týmu: ' + localStorage.getItem('teamName', captainName)
+          document.getElementById('displayCaptainName').textContent =
+            'Jméno kapitána: ' +
+            localStorage.getItem('captainName', captainName)
+
+          if (currentState == 'done') {
+            setFinalState()
+          }
+        }
+
+        // Přidáme posluchače událostí na všechny obálky
+        document.querySelectorAll('.ag-courses_item').forEach(function (item) {
+          item.addEventListener('click', function () {
+            // Zkontroluje, zda je odemykání povoleno
+            can_unlock = localStorage.getItem('can_unlock') || false
+            current_letter_title = item
+              .querySelector('.ag-courses-item_title')
+              .textContent.trim() // Najděte potomka uvnitř rodiče
+            localStorage.setItem('current_letter_title', current_letter_title)
+            var letter = localStorage.getItem('current_letter_title')
+            if (this.classList.contains('open')) {
+              letter == 'Finální úloha' ? (letter = 'FINAL') : ''
+              document.getElementById('dialogTitle').textContent =
+                dialogTexts[letter]
+              window.dialog.showModal()
+            } else {
+              if (can_unlock === 'true') {
+                if (letter == 'Finální úloha') {
+                  if (!areAllLettersDone()) {
+                    return
+                  }
+                  localStorage.setItem('state', 'finalState')
+                  document
+                    .getElementById('finalLetterInputs')
+                    .classList.remove('hidden')
+                  var inputElement1 = document.getElementById('userAnswer2')
+                  var inputElement2 = document.getElementById('userAnswer3')
+                  inputElement1.required = true
+                  inputElement2.required = true
+                }
+                this.classList.add('open')
+                // Najde všechny potomky s třídou 'lock-letter' a odstraní ji
+                this.querySelectorAll('.lock-letter').forEach(function (child) {
+                  const letter = localStorage.getItem('current_letter_title')
+                  child.classList.remove('lock-letter')
+                  var unlockedBoxesArr =
+                    JSON.parse(localStorage.getItem('unlockedBoxes')) ||
+                    unlockedBoxes
+                  unlockedBoxesArr[letter] = letterState.unlocked
+                  localStorage.setItem(
+                    'unlockedBoxes',
+                    JSON.stringify(unlockedBoxesArr)
+                  )
+                })
+
+                // Zablokuje další odemykání dokud nebude 'can_unlock' opět nastaveno na true
+                can_unlock = false
+                localStorage.setItem('can_unlock', 'false')
+                localStorage.setItem('timer_duration', 3)
+                startCountdown()
+              }
+            }
+          })
+        })
+      }
+    </script>
+  </body>
 </html>
