@@ -1377,7 +1377,7 @@ const correctAnswers = {
   D: "josef kajetán tyl",
   E: "malý princ",
   F: "norsko",
-  G: "111+113+117",
+  G: "111+113+115+117",
   H: "sedmikráska",
   I: "24",
   FINAL: "bídníci",
@@ -1422,25 +1422,21 @@ function areAllLettersDone() {
   // Projde klíče od A do I a zkontroluje, zda všechny mají stav 'done'
   for (let i = 'A'.charCodeAt(0); i <= 'I'.charCodeAt(0); i++) {
     const letter = String.fromCharCode(i);
-    if (unlockedBoxesArr[letter] !== letterState.done) {
-      console.log("nejsou všechny splněny. -- Nemají DONE");
+    if (unlockedBoxesArr[letter] !== letterState.done) {      
       return false; // Pokud nějaký prvek nemá stav 'done', vrátí false
     }
-  }
-  console.log(" Všechny prvky mají stav 'done'");
+  }  
   return true; // Všechny prvky mají stav 'done'
 }
 
 function compareAnswers (letter) {
   // Definujte správnou odpověď
-  var correctAnswer = correctAnswers[letter];
-  console.log("correctAnswer - ", correctAnswer);
+  var correctAnswer = correctAnswers[letter];  
   // Získejte uživatelem zadanou odpověď
   var userAnswer = document.getElementById("userAnswer").value;
   if(letter === "FINAL") {
     var correctAnswer1 = correctAnswers[`${letter}1`]; 
-    var correctAnswer2 = correctAnswers[`${letter}2`];
-    console.log("correctAnswer1 - ", correctAnswer1);
+    var correctAnswer2 = correctAnswers[`${letter}2`];    
     var userAnswer1 = document.getElementById("userAnswer2").value;
     var userAnswer2 = document.getElementById("userAnswer3").value;
     return ((userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()) &&  (userAnswer1.trim().toLowerCase() === correctAnswer1.toLowerCase()) &&  (userAnswer2.trim().toLowerCase() === correctAnswer2.toLowerCase()))
@@ -1476,8 +1472,7 @@ function setFinalState() {
   document.getElementById("letterTime").style.display = "none";
 }
 
-function checkAnswer(event) {
-  console.log("event - ", event);
+function checkAnswer(event) {  
   var letter = localStorage.getItem("current_letter_title");
   letter == "Finální úloha" ? letter = "FINAL": "";
   
@@ -1574,8 +1569,7 @@ function startTimer() {
 
 // Funkce, která aktualizuje třídy prvků podle jejich stavů v unlockedBoxes
 function updateLetterClasses() {
-  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes; 
-  console.log("unlockedBoxesArr", unlockedBoxesArr)
+  var unlockedBoxesArr = JSON.parse(localStorage.getItem("unlockedBoxes")) || unlockedBoxes;   
   for (var [letter, state] of Object.entries(unlockedBoxesArr)) {
     letter == "Finální úloha" ? letter = "FINAL": "";
     const letterElement = document.getElementById(`letter_${letter}`);
@@ -1617,8 +1611,7 @@ window.onload = function () {
     document.querySelectorAll('.ag-courses_item').forEach(function(item) {
     item.addEventListener('click', function() {
         // Zkontroluje, zda je odemykání povoleno
-        can_unlock = localStorage.getItem('can_unlock') || false;
-        console.log("pepa", can_unlock);
+        can_unlock = localStorage.getItem('can_unlock') || false;        
         current_letter_title = item.querySelector('.ag-courses-item_title').textContent.trim(); // Najděte potomka uvnitř rodiče
         localStorage.setItem('current_letter_title', current_letter_title);
         var letter = localStorage.getItem("current_letter_title");
@@ -1629,8 +1622,7 @@ window.onload = function () {
         } else {
           if (can_unlock === "true" ) {
               if(letter == "Finální úloha"){
-                if(!areAllLettersDone()){
-                  console.log("nejsou všechny splněny.");
+                if(!areAllLettersDone()){                  
                   return;
                 }
                 localStorage.setItem('state', "finalState");
@@ -1640,8 +1632,7 @@ window.onload = function () {
                 inputElement1.required = true;
                 inputElement2.required = true;
               }
-              this.classList.add("open");
-              console.log("pepa in if", can_unlock);
+              this.classList.add("open");              
               // Najde všechny potomky s třídou 'lock-letter' a odstraní ji
               this.querySelectorAll('.lock-letter').forEach(function(child) {
                 const letter = localStorage.getItem("current_letter_title");
