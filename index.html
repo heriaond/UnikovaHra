@@ -311,6 +311,28 @@
           line-height: 22px;
         }
 
+        .x {
+          filter: grayscale(1);
+          border: none;
+          background: none;
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          transition: ease filter, transform 0.3s;
+          cursor: pointer;
+          transform-origin: center;
+          font-size: 1.7rem;
+          &:hover {
+            filter: grayscale(0);
+            transform: scale(1.1);
+          }
+
+          img {
+            max-width: 3rem;
+            max-height: 3rem;
+          }
+        }
+
         form {
           padding: 0;
           margin: 0;
@@ -1230,6 +1252,9 @@
         <!-- Header -->
         <header>
           <div class="row align-items-center">
+            <button onclick="refreshStorage();" aria-label="close" class="x">
+              <img src="back-arrow.svg" alt="Refresh" />
+            </button>
             <div class="col-sm-5 text-center text-sm-right">
               <h4 class="text-7 mb-0">Venkovní šifrovací hry</h4>
               <div id="congrats-label" class="hidden">
@@ -1435,6 +1460,14 @@
         localStorage.setItem('captainName', captainName)
         changePage('gamePage')
         // Zde inicializovat časovač
+      }
+
+      function refreshStorage() {
+        if (confirm('Opravdu chcete odejít?')) {
+          // Refresh the page
+          location.reload()
+          localStorage.clear()
+        }
       }
 
       const correctAnswers = {
@@ -1682,7 +1715,12 @@
       window.onload = function () {
         var savedPage = localStorage.getItem('currentPage')
         var currentState = localStorage.getItem('state')
-        if (savedPage) changePage(savedPage)
+        if (savedPage) {
+          changePage(savedPage)
+        } else {
+          localStorage.clear()
+        }
+
         updateLetterClasses()
         if (savedPage == 'gamePage') {
           startCountdown()
