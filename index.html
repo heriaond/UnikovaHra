@@ -1437,38 +1437,7 @@
 
     <script>
       let currentPage = 'loginPage';
-      const userInfo = { username: 'XTB55', password: 'ab123' };
-
-      function login() {
-        const username = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        if (username === userInfo.username && password === userInfo.password) {
-          changePage('teamInfoPage');
-        } else {
-          alert('Nesprávné přihlašovací údaje.');
-        }
-      }
-
-      function submitTeamInfo() {
-        const teamName = document.getElementById('teamName').value;
-        const captainName = document.getElementById('captainName').value;
-        document.getElementById('displayTeamName').textContent =
-          'Jméno týmu: ' + teamName;
-        document.getElementById('displayCaptainName').textContent =
-          'Jméno kapitána: ' + captainName;
-        localStorage.setItem('teamName', teamName);
-        localStorage.setItem('captainName', captainName);
-        changePage('gamePage');
-        // Zde inicializovat časovač
-      }
-
-      function refreshStorage() {
-        if (confirm('Opravdu chcete odejít?')) {
-          // Refresh the page
-          location.reload();
-          localStorage.clear();
-        }
-      }
+      const userInfo = { username: 'XTB55', password: 'm5c82' };
 
       const correctAnswers = {
         A: '22',
@@ -1516,6 +1485,37 @@
         I: letterState.locked,
         FINAL: letterState.locked,
       };
+
+      function login() {
+        const username = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        if (username === userInfo.username && password === userInfo.password) {
+          changePage('teamInfoPage');
+        } else {
+          alert('Nesprávné přihlašovací údaje.');
+        }
+      }
+
+      function submitTeamInfo() {
+        const teamName = document.getElementById('teamName').value;
+        const captainName = document.getElementById('captainName').value;
+        document.getElementById('displayTeamName').textContent =
+          'Jméno týmu: ' + teamName;
+        document.getElementById('displayCaptainName').textContent =
+          'Jméno kapitána: ' + captainName;
+        localStorage.setItem('teamName', teamName);
+        localStorage.setItem('captainName', captainName);
+        changePage('gamePage');
+        // Zde inicializovat časovač
+      }
+
+      function refreshStorage() {
+        if (confirm('Opravdu chcete odejít?')) {
+          // Refresh the page
+          location.reload();
+          localStorage.clear();
+        }
+      }
 
       function areAllLettersDone() {
         var unlockedBoxesArr =
@@ -1665,7 +1665,7 @@
       function startCountdown() {
         display = document.querySelector('#letterTime');
         display.style.color = 'red';
-        var timer_duration = localStorage.getItem('timer_duration') || 5; //TODO: Změnit čas
+        var timer_duration = localStorage.getItem('timer_duration') || 900; //TODO: Změnit čas
         var timer = timer_duration,
           minutes,
           seconds;
@@ -1787,7 +1787,7 @@
                 // Zablokuje další odemykání dokud nebude 'can_unlock' opět nastaveno na true
                 can_unlock = false;
                 localStorage.setItem('can_unlock', 'false');
-                localStorage.setItem('timer_duration', 3);
+                localStorage.setItem('timer_duration', 900);
                 startCountdown();
               }
             }
