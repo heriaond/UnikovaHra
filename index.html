@@ -1637,25 +1637,35 @@
       // Funkce pro inicializaci hry, časovače a další logiky...
       // Funkce pro inicializaci časovače
       function startTimer() {
-        var startTime =
-          Date.now() - localStorage.getItem('elapsedTime') || Date.now();
+        // Načte počáteční čas z localStorage nebo ho nastaví na aktuální čas, pokud ještě nebyl nastaven
+        let startTime = localStorage.getItem('startTime');
+        if (!startTime) {
+          startTime = Date.now();
+          localStorage.setItem('startTime', startTime);
+        } else {
+          startTime = parseInt(startTime); // Ujistěte se, že startTime je číslo
+        }
 
         // Funkce pro aktualizaci času
         function updateTimer() {
-          var elapsedTime = Date.now() - startTime;
-          var seconds = Math.floor((elapsedTime / 1000) % 60);
-          var minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
-          var hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+          const elapsedTime = Date.now() - startTime;
+          const seconds = Math.floor((elapsedTime / 1000) % 60);
+          const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+          const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
 
           // Přidání vedoucí nuly, pokud je hodnota menší než 10
-          seconds = seconds < 10 ? '0' + seconds : seconds;
-          minutes = minutes < 10 ? '0' + minutes : minutes;
-          hours = hours < 10 ? '0' + hours : hours;
+          const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+          const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+          const formattedHours = hours < 10 ? '0' + hours : hours;
 
           // Aktualizace zobrazení času
           document.getElementById('totalTime').textContent =
-            'Celkový čas: ' + hours + ':' + minutes + ':' + seconds;
-          localStorage.setItem('elapsedTime', elapsedTime);
+            'Celkový čas: ' +
+            formattedHours +
+            ':' +
+            formattedMinutes +
+            ':' +
+            formattedSeconds;
         }
 
         // Aktualizace času každou sekundu
@@ -1665,26 +1675,32 @@
       function startCountdown() {
         display = document.querySelector('#letterTime');
         display.style.color = 'red';
-        var timer_duration = localStorage.getItem('timer_duration') || 900; //TODO: Změnit čas
-        var timer = timer_duration,
-          minutes,
-          seconds;
-        var countdownInterval = setInterval(function () {
-          minutes = parseInt(timer / 60, 10);
-          seconds = parseInt(timer % 60, 10);
 
-          minutes = minutes < 10 ? '0' + minutes : minutes;
-          seconds = seconds < 10 ? '0' + seconds : seconds;
+        let end_time = parseInt(localStorage.getItem('end_time'));
+        if (!end_time) {
+          // Nastaví konec odpočtu na 15 minut od aktuálního času
+          end_time = Date.now() + 900000; // 900 sekund * 1000 pro milisekundy
+          localStorage.setItem('end_time', end_time);
+        }
+
+        const countdownInterval = setInterval(() => {
+          const now = Date.now();
+          const diff = end_time - now;
+          const minutes = Math.floor(diff / 60000);
+          const seconds = Math.floor((diff % 60000) / 1000);
 
           display.textContent =
-            'Čas do otevření další obálky ' + minutes + ':' + seconds;
-          localStorage.setItem('timer_duration', minutes * 60 + seconds);
+            'Čas do otevření další obálky ' +
+            (minutes < 10 ? '0' + minutes : minutes) +
+            ':' +
+            (seconds < 10 ? '0' + seconds : seconds);
 
-          if (--timer < 0) {
+          if (diff <= 0) {
             clearInterval(countdownInterval);
             display.textContent = 'Čas do otevření další obálky 00:00';
             display.style.color = 'green'; // Změna barvy textu na zelenou po skončení odpočtu
-            localStorage.setItem('can_unlock', true);
+            localStorage.setItem('can_unlock', 'true');
+            localStorage.removeItem('end_time'); // Odstraní čas ukončení z localStorage
           }
         }, 1000);
       }
