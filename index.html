@@ -1610,10 +1610,15 @@
           if (letter == 'FINAL') {
             //TODO: Dodelat tlacitko zobrazeni statistik (restart?) -- bude se zobrazovat podle localStorage "state"
             localStorage.setItem('state', 'done');
-            localStorage.setItem(
-              'final_time',
-              localStorage.getItem('elapsedTime')
-            );
+            let startTime = localStorage.getItem('startTime');
+            if (!startTime) {
+              startTime = Date.now();
+              localStorage.setItem('startTime', startTime);
+            } else {
+              startTime = parseInt(startTime); // Ujistěte se, že startTime je číslo
+            }
+            const elapsedTime = Date.now() - startTime;
+            localStorage.setItem('final_time', elapsedTime);
             setFinalState();
           }
         } else {
